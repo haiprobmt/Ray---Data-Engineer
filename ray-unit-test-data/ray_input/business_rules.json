@@ -1,0 +1,27 @@
+{
+  "project": "Fabric Senior DE Unit Test Lab",
+  "source_systems": [
+    "SAP",
+    "CRM"
+  ],
+  "target_pattern": "Bronze -> Silver -> Gold -> Power BI",
+  "rules": {
+    "customer_id": {
+      "documented_definition": "Use SAP customer ID as a string and preserve leading zeros.",
+      "known_alternative": "Some legacy SQL casts SAP customer ID to BIGINT."
+    },
+    "active_customer": {
+      "documented_definition": "Customer with at least one completed sales transaction in the previous 12 months.",
+      "existing_implementation_hint": "Legacy dashboard uses customer_status = 'ACTIVE'."
+    },
+    "inventory_reporting": {
+      "documented_definition": "Include all active reporting plants.",
+      "note": "Warehouse codes changed over time; mapping must be treated carefully."
+    },
+    "silver_quality": {
+      "deduplicate": true,
+      "quarantine_invalid_records": true,
+      "do_not_silently_drop_invalid_records": true
+    }
+  }
+}

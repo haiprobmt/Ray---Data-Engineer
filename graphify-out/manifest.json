@@ -1,0 +1,1592 @@
+{
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\docs\\verification.json": {
+    "mtime": 1788618586.0,
+    "ast_hash": "3c4f13f25975217022a10e523be6d435",
+    "semantic_hash": "3c4f13f25975217022a10e523be6d435"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\evaluations\\scenarios.json": {
+    "mtime": 1788618586.0,
+    "ast_hash": "1bc683a9b1cc5cda98a8b19c0f926b95",
+    "semantic_hash": "1bc683a9b1cc5cda98a8b19c0f926b95"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\projects\\sample-fabric\\repo\\inventory.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "16a9525879fa18c49eb7e7d7885527d6",
+    "semantic_hash": "16a9525879fa18c49eb7e7d7885527d6"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\projects\\sample-fabric\\repo\\tests\\test_inventory.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "d476222d93da33ba9cb25d0fab5f43dc",
+    "semantic_hash": "d476222d93da33ba9cb25d0fab5f43dc"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\pyproject.toml": {
+    "mtime": 1788618586.0,
+    "ast_hash": "1a51f53b689597da2a98c3a88884b182",
+    "semantic_hash": "1a51f53b689597da2a98c3a88884b182"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\scripts\\backup.ps1": {
+    "mtime": 1788618586.0,
+    "ast_hash": "0d0b85b7ecf3d0736d6018301bee59c4",
+    "semantic_hash": "0d0b85b7ecf3d0736d6018301bee59c4"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\scripts\\offline-demo.ps1": {
+    "mtime": 1788618586.0,
+    "ast_hash": "98ee7d29a441d28f7e34b1caa78ed486",
+    "semantic_hash": "98ee7d29a441d28f7e34b1caa78ed486"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\scripts\\ray.ps1": {
+    "mtime": 1788618586.0,
+    "ast_hash": "20eb170d908bf3d29c847b13f04c86ad",
+    "semantic_hash": "20eb170d908bf3d29c847b13f04c86ad"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\scripts\\register-startup.ps1": {
+    "mtime": 1788618586.0,
+    "ast_hash": "c06f0491052bbbfb6013f636af6b9e21",
+    "semantic_hash": "c06f0491052bbbfb6013f636af6b9e21"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\scripts\\setup.ps1": {
+    "mtime": 1788618586.0,
+    "ast_hash": "6ce98da51f2f97f23cfc6956116bf4e4",
+    "semantic_hash": "6ce98da51f2f97f23cfc6956116bf4e4"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\scripts\\start-ray.ps1": {
+    "mtime": 1788618586.0,
+    "ast_hash": "f5066d60019b4a9f49bea799fc1244c7",
+    "semantic_hash": "f5066d60019b4a9f49bea799fc1244c7"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\__init__.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "9ee0a0f693f5e81556e7d01eb18db8a8",
+    "semantic_hash": "9ee0a0f693f5e81556e7d01eb18db8a8"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\__main__.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "5109ab95441454c3d40c9321c4c146b7",
+    "semantic_hash": "5109ab95441454c3d40c9321c4c146b7"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\cli.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "400d57a2ad0cda8bdb72aea30dda6a68",
+    "semantic_hash": "400d57a2ad0cda8bdb72aea30dda6a68"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\cloud.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "07fe464bf4a81ebbed81ca78f066bda5",
+    "semantic_hash": "07fe464bf4a81ebbed81ca78f066bda5"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\codex_client.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "17b71b827d0e981c80017deaaa8e8031",
+    "semantic_hash": "17b71b827d0e981c80017deaaa8e8031"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\config.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "0f33aad9d50acdc1956823ec2b23b1d3",
+    "semantic_hash": "0f33aad9d50acdc1956823ec2b23b1d3"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\context.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "8cdaf6433f0368209113c53d86ee02c6",
+    "semantic_hash": "8cdaf6433f0368209113c53d86ee02c6"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\control.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "751a278877d5c0491af301c443b9bca3",
+    "semantic_hash": "751a278877d5c0491af301c443b9bca3"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\demo.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "eb09aea826dd3cce2243b1e1cae08c72",
+    "semantic_hash": "eb09aea826dd3cce2243b1e1cae08c72"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\evaluation.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "9c51a2a9ade799e5ea46a353a36c3a42",
+    "semantic_hash": "9c51a2a9ade799e5ea46a353a36c3a42"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\fabric.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "f5e902838dbc712321c0dd2c5b217ca1",
+    "semantic_hash": "f5e902838dbc712321c0dd2c5b217ca1"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\fabric_worker.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "842c6773a0f3b3ea56e70fafec67a2ef",
+    "semantic_hash": "842c6773a0f3b3ea56e70fafec67a2ef"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\memory.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "e172fd315226b6d8e420f7ab6cefc00d",
+    "semantic_hash": "e172fd315226b6d8e420f7ab6cefc00d"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\monitor.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "395fcb4567278b5ccd3f810fe8680d2a",
+    "semantic_hash": "395fcb4567278b5ccd3f810fe8680d2a"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\orchestrator.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "014e460aa3c7023cba560ade71cf8068",
+    "semantic_hash": "014e460aa3c7023cba560ade71cf8068"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\processes.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "07d8605164ec30445209340ccb155517",
+    "semantic_hash": "07d8605164ec30445209340ccb155517"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\runtime.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "bbaa05d635b5971ce61ec68626ed16c8",
+    "semantic_hash": "bbaa05d635b5971ce61ec68626ed16c8"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\schemas.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "35ef3237251c85f5ad27fd62630c8229",
+    "semantic_hash": "35ef3237251c85f5ad27fd62630c8229"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\sdk_worker.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "8b6b9a91dfc7fe19bb63e713efa4dde7",
+    "semantic_hash": "8b6b9a91dfc7fe19bb63e713efa4dde7"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\service.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "dbd18acec828eec4493f42c8f1ff588d",
+    "semantic_hash": "dbd18acec828eec4493f42c8f1ff588d"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\skills.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "7e39a765f495122464f36db801053432",
+    "semantic_hash": "7e39a765f495122464f36db801053432"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\state.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "b0119189ef43352894f7dc19af40d5b1",
+    "semantic_hash": "b0119189ef43352894f7dc19af40d5b1"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\telegram.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "7d390b131cd953178bf68c5a43d7f933",
+    "semantic_hash": "7d390b131cd953178bf68c5a43d7f933"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\authoring\\charts\\bar_chart.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "326fb55e6aaeec299ea8ca8f8bb3fcd1",
+    "semantic_hash": "326fb55e6aaeec299ea8ca8f8bb3fcd1"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\authoring\\charts\\line_chart.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "ccfeb5fe14b8af470b6e82cb18e4649a",
+    "semantic_hash": "ccfeb5fe14b8af470b6e82cb18e4649a"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\consumption\\charts\\bar_chart.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "326fb55e6aaeec299ea8ca8f8bb3fcd1",
+    "semantic_hash": "326fb55e6aaeec299ea8ca8f8bb3fcd1"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\consumption\\charts\\line_chart.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "ccfeb5fe14b8af470b6e82cb18e4649a",
+    "semantic_hash": "ccfeb5fe14b8af470b6e82cb18e4649a"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\deployment-pipelines-authoring-cli\\references\\scripts\\diff_item_definitions.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "b3448eebd0e0bded21e83f6d1a607217",
+    "semantic_hash": "b3448eebd0e0bded21e83f6d1a607217"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventhouse-cli\\scripts\\create-table-and-ingest.ps1": {
+    "mtime": 1788618586.0,
+    "ast_hash": "01d7744cf230b086c11f47623431c07a",
+    "semantic_hash": "01d7744cf230b086c11f47623431c07a"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventhouse-cli\\scripts\\create-table-and-ingest.sh": {
+    "mtime": 1788618586.0,
+    "ast_hash": "4fb539aa7fb238c375f286855ad857c7",
+    "semantic_hash": "4fb539aa7fb238c375f286855ad857c7"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventhouse-cli\\scripts\\deploy-schema.ps1": {
+    "mtime": 1788618586.0,
+    "ast_hash": "aac4ef528a7fa2416bbd386ab51497f9",
+    "semantic_hash": "aac4ef528a7fa2416bbd386ab51497f9"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventhouse-cli\\scripts\\deploy-schema.sh": {
+    "mtime": 1788618586.0,
+    "ast_hash": "5eca0e20605ea0543a462a5f646e44f6",
+    "semantic_hash": "5eca0e20605ea0543a462a5f646e44f6"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventhouse-cli\\scripts\\export-schema.sh": {
+    "mtime": 1788618586.0,
+    "ast_hash": "289b702f9880aa8791fbb64607783ea0",
+    "semantic_hash": "289b702f9880aa8791fbb64607783ea0"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventhouse-cli\\scripts\\set-policies.sh": {
+    "mtime": 1788618586.0,
+    "ast_hash": "3aef37b0d481e752908820ada39798dc",
+    "semantic_hash": "3aef37b0d481e752908820ada39798dc"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\assets\\base.json": {
+    "mtime": 1788618586.0,
+    "ast_hash": "8a7496695d20bce1434e980359a1c952",
+    "semantic_hash": "8a7496695d20bce1434e980359a1c952"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\source.json": {
+    "mtime": 1788618586.0,
+    "ast_hash": "fcea255ea3b95c3093883aeae14b8e3f",
+    "semantic_hash": "fcea255ea3b95c3093883aeae14b8e3f"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\tests\\conftest.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "507819f260e4bb220813e9ce26006a8e",
+    "semantic_hash": "507819f260e4bb220813e9ce26006a8e"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\tests\\test_cloud.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "5129b2e9aa8162f1be3284e9f2665b1b",
+    "semantic_hash": "5129b2e9aa8162f1be3284e9f2665b1b"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\tests\\test_memory_control.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "47c4d989fa28c5623e271c7790790b6c",
+    "semantic_hash": "47c4d989fa28c5623e271c7790790b6c"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\tests\\test_policy.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "508f1f962d341c013682df5e7eaa7cb2",
+    "semantic_hash": "508f1f962d341c013682df5e7eaa7cb2"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\tests\\test_recovery.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "04f357822a72259a10e52fbfb229b528",
+    "semantic_hash": "04f357822a72259a10e52fbfb229b528"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\tests\\test_runtime.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "7e96ea90630049232b19f905e9aad604",
+    "semantic_hash": "7e96ea90630049232b19f905e9aad604"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\tests\\test_telegram.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "ada4fc4044bf12ad6beddf467831b656",
+    "semantic_hash": "ada4fc4044bf12ad6beddf467831b656"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\tests\\test_transport.py": {
+    "mtime": 1788618586.0,
+    "ast_hash": "1802ab0bb515929d3fee9c79e4862dba",
+    "semantic_hash": "1802ab0bb515929d3fee9c79e4862dba"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\.claude\\rules\\fabric-cli.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "ed7b832aa703aa719fbef0aa8f105825",
+    "semantic_hash": "ed7b832aa703aa719fbef0aa8f105825"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\AGENTS.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "960b7871a6722ebbb7a2f73595d4708c",
+    "semantic_hash": "960b7871a6722ebbb7a2f73595d4708c"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\README.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "8bf0e6c60ceed403c0d6479e38fe56b2",
+    "semantic_hash": "8bf0e6c60ceed403c0d6479e38fe56b2"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\docs\\architecture.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "cf48b008d22adf84fe9190f7fbd90b69",
+    "semantic_hash": "cf48b008d22adf84fe9190f7fbd90b69"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\docs\\cloud-actions.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "08e094ea2e29176485b8a6d40c5dbc49",
+    "semantic_hash": "08e094ea2e29176485b8a6d40c5dbc49"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\docs\\evaluations.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "a5508f60dd157030f5c9398f5383fedc",
+    "semantic_hash": "a5508f60dd157030f5c9398f5383fedc"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\docs\\fabric-cicd-decision.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "ca9d695effe68dd468a43403a6aebb7e",
+    "semantic_hash": "ca9d695effe68dd468a43403a6aebb7e"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\docs\\implementation-status.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "8f9da4bc74d93100200c2f9e2448b15d",
+    "semantic_hash": "8f9da4bc74d93100200c2f9e2448b15d"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\docs\\operations.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "83267f952213dab727cd4ed6b202fcaf",
+    "semantic_hash": "83267f952213dab727cd4ed6b202fcaf"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\gateway.example.yaml": {
+    "mtime": 1788618586.0,
+    "ast_hash": "cf6e70b584149ca27c30c88e98cc9c82",
+    "semantic_hash": "cf6e70b584149ca27c30c88e98cc9c82"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\projects\\sample-fabric\\CONTEXT.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "8c63429f8699f96e4a71e899f433c97b",
+    "semantic_hash": "8c63429f8699f96e4a71e899f433c97b"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\projects\\sample-fabric\\config.yaml": {
+    "mtime": 1788618586.0,
+    "ast_hash": "5e82b498973b242a989e209ab3dc4668",
+    "semantic_hash": "5e82b498973b242a989e209ab3dc4668"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\projects\\sample-fabric\\decisions\\DEC-0001.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "efd06c452a2a751263483ec7c02aac4e",
+    "semantic_hash": "efd06c452a2a751263483ec7c02aac4e"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\requirements-windows-py312.lock.txt": {
+    "mtime": 1788618586.0,
+    "ast_hash": "bf007745138660da6a36a184e5f6e083",
+    "semantic_hash": "bf007745138660da6a36a184e5f6e083"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\playbooks\\incident.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "875e6ab99b6c8b694edacb706ecc05b7",
+    "semantic_hash": "875e6ab99b6c8b694edacb706ecc05b7"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\prompts\\persona.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "6ecdaad9f2beec8db4b8dcea70111a0a",
+    "semantic_hash": "6ecdaad9f2beec8db4b8dcea70111a0a"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\COMMON-CLI.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "dc4063b03dd3d62482891fb82140ff0f",
+    "semantic_hash": "dc4063b03dd3d62482891fb82140ff0f"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\COMMON-CORE.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "b6a38b1419717e6a54b0092d0e366fa0",
+    "semantic_hash": "b6a38b1419717e6a54b0092d0e366fa0"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\DATAFLOWS-AUTHORING-CORE.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "11a5f650eb12ecc253e579c7ce34605a",
+    "semantic_hash": "11a5f650eb12ecc253e579c7ce34605a"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\DATAFLOWS-CONSUMPTION-CORE.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "d0d585f3a806e89206367771c5097702",
+    "semantic_hash": "d0d585f3a806e89206367771c5097702"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\EVENTHOUSE-CONSUMPTION-CORE.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "5f66e1c688a552e01415fe5eaa9d287d",
+    "semantic_hash": "5f66e1c688a552e01415fe5eaa9d287d"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\EVENTSTREAM-AUTHORING-CORE.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "0c0cf98f378c58da69278176a08a8c10",
+    "semantic_hash": "0c0cf98f378c58da69278176a08a8c10"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\EVENTSTREAM-CONSUMPTION-CORE.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "00f1e818f7e3341fe709c34569c506c9",
+    "semantic_hash": "00f1e818f7e3341fe709c34569c506c9"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\ITEM-DEFINITIONS-CORE.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "11cb8d1be8714853413414609722e09f",
+    "semantic_hash": "11cb8d1be8714853413414609722e09f"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\SPARK-AUTHORING-CORE.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "ac33aadddefc54c9bb299be4f7a97894",
+    "semantic_hash": "ac33aadddefc54c9bb299be4f7a97894"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\SPARK-CONSUMPTION-CORE.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "6d5659d5ad3f8eed0b8879d7c07ccc87",
+    "semantic_hash": "6d5659d5ad3f8eed0b8879d7c07ccc87"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\SPARK-MONITORING-CORE.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "95acb48b8ff31bfde4e86600fa49808d",
+    "semantic_hash": "95acb48b8ff31bfde4e86600fa49808d"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\SPARK-NOTEBOOK-AUTHORING-CORE.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "b4fab5bb1f75ed8ad409311aa86a2d9c",
+    "semantic_hash": "b4fab5bb1f75ed8ad409311aa86a2d9c"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\SQLDB-AUTHORING-CORE.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "128d09b3a0ef6860e20cd7ac5712b58e",
+    "semantic_hash": "128d09b3a0ef6860e20cd7ac5712b58e"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\SQLDB-CONSUMPTION-CORE.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "1e94cb0a8deab09d08ce9d143012235a",
+    "semantic_hash": "1e94cb0a8deab09d08ce9d143012235a"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\SQLDW-AUTHORING-CORE.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "669a7f2597853b917bae3a2c2635a6b8",
+    "semantic_hash": "669a7f2597853b917bae3a2c2635a6b8"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\SQLDW-CONSUMPTION-CORE.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "07a02ef852d18a24a9becd38d644a742",
+    "semantic_hash": "07a02ef852d18a24a9becd38d644a742"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\notebook-authoring\\connections.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "713ae86207f6a63b3aa2448274f6a217",
+    "semantic_hash": "713ae86207f6a63b3aa2448274f6a217"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\notebook-authoring\\context-and-params.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "084106ac90a7599e528a32e9739a0844",
+    "semantic_hash": "084106ac90a7599e528a32e9739a0844"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\notebook-authoring\\context-resolution.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "10c1fc2f620d831315ba11bd856634a2",
+    "semantic_hash": "10c1fc2f620d831315ba11bd856634a2"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\notebook-authoring\\lakehouse-paths.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "60469f888406eb04545a7ebf267f1aa1",
+    "semantic_hash": "60469f888406eb04545a7ebf267f1aa1"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\notebook-authoring\\lakehouse-tables.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "ce46b1e985b8959d599e2ec5c9830c9a",
+    "semantic_hash": "ce46b1e985b8959d599e2ec5c9830c9a"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\notebook-authoring\\library-mgmt.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "e4b8829b9308850ce59edf8356d6f60b",
+    "semantic_hash": "e4b8829b9308850ce59edf8356d6f60b"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\notebook-authoring\\ml-workflow.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "ffa88212caf0fbb3ecd70ed3fec078dc",
+    "semantic_hash": "ffa88212caf0fbb3ecd70ed3fec078dc"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\notebook-authoring\\notebook-resources.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "2321791c6c728bc775748bd74fc60a11",
+    "semantic_hash": "2321791c6c728bc775748bd74fc60a11"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\common\\notebook-authoring\\troubleshooting.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "4a2785ca74cb5e4a98b9bcd9fe8ec1c2",
+    "semantic_hash": "4a2785ca74cb5e4a98b9bcd9fe8ec1c2"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\activator-cli\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "38453f1830c976469ddd1daa1ddd698c",
+    "semantic_hash": "38453f1830c976469ddd1daa1ddd698c"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\activator-cli\\references\\authoring.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "d20cc9ed332bb5b15af213a8271d25f3",
+    "semantic_hash": "d20cc9ed332bb5b15af213a8271d25f3"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\activator-cli\\references\\authoring\\action-types.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "f448d6b1180361f2d71059925362af72",
+    "semantic_hash": "f448d6b1180361f2d71059925362af72"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\activator-cli\\references\\authoring\\dtb-source.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "659734407eb4a3c28358c61ffc7c8b7e",
+    "semantic_hash": "659734407eb4a3c28358c61ffc7c8b7e"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\activator-cli\\references\\authoring\\eventstream-source.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "8efac6f9eb1b93d301398579a0aaf1b9",
+    "semantic_hash": "8efac6f9eb1b93d301398579a0aaf1b9"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\activator-cli\\references\\authoring\\kql-source.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "c34de9dd0b2c13b77b0b53beef71c191",
+    "semantic_hash": "c34de9dd0b2c13b77b0b53beef71c191"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\activator-cli\\references\\authoring\\powerbi-source.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "99b5644d054b24168c02b8c5e6640435",
+    "semantic_hash": "99b5644d054b24168c02b8c5e6640435"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\activator-cli\\references\\authoring\\real-time-hub-source.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "c1c7a7e3e98a28373f48d2c96be0a0e3",
+    "semantic_hash": "c1c7a7e3e98a28373f48d2c96be0a0e3"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\activator-cli\\references\\authoring\\rule-conditions.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "13d7a159df228f58b11d9bbabfa164a9",
+    "semantic_hash": "13d7a159df228f58b11d9bbabfa164a9"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\activator-cli\\references\\authoring\\source-types.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "977997fdcd3c1190cfa23ac296cabaf7",
+    "semantic_hash": "977997fdcd3c1190cfa23ac296cabaf7"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\activator-cli\\references\\consumption.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "3ec0cbf0c594796f7797813f7d933bd8",
+    "semantic_hash": "3ec0cbf0c594796f7797813f7d933bd8"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\azmon-mirroredcatalogs-operations-cli\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "4ccdeb09b8ec22fbd187c29d6bc763d1",
+    "semantic_hash": "4ccdeb09b8ec22fbd187c29d6bc763d1"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\azmon-mirroredcatalogs-operations-cli\\references\\app-insights-dynamic-fields-reference.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "d3fe1466f72382565a015f6bd3b08e97",
+    "semantic_hash": "d3fe1466f72382565a015f6bd3b08e97"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\azmon-mirroredcatalogs-operations-cli\\references\\azmon-fabric-api-reference.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "3a5c076c66cdd1df494fa5af5c0f6bef",
+    "semantic_hash": "3a5c076c66cdd1df494fa5af5c0f6bef"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\azmon-mirroredcatalogs-operations-cli\\references\\business-analysis-workflow.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "c94694b48111c8c05df0e5abc8c3fd91",
+    "semantic_hash": "c94694b48111c8c05df0e5abc8c3fd91"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\azmon-mirroredcatalogs-operations-cli\\references\\dashboard-reference.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "7bc8df9a955637006a2f1ecebbfd8cf7",
+    "semantic_hash": "7bc8df9a955637006a2f1ecebbfd8cf7"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\azmon-mirroredcatalogs-operations-cli\\references\\eventhouse-shortcuts-reference.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "f8f7a1c31a386a2848fea56040329c39",
+    "semantic_hash": "f8f7a1c31a386a2848fea56040329c39"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\azmon-mirroredcatalogs-operations-cli\\references\\mirrored-catalog-reference.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "1384a57862771125b3a49ca14334b798",
+    "semantic_hash": "1384a57862771125b3a49ca14334b798"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\azmon-mirroredcatalogs-operations-cli\\references\\oauth-connection-reference.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "321858e5ccec160582a2859a8f659859",
+    "semantic_hash": "321858e5ccec160582a2859a8f659859"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\azmon-mirroredcatalogs-operations-cli\\references\\operations-agent-reference.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "c52a2457d5503f7ef147cb1acc0a1974",
+    "semantic_hash": "c52a2457d5503f7ef147cb1acc0a1974"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\azmon-mirroredcatalogs-operations-cli\\references\\telemetry-table-reference.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "74b8b9770446bc80ceb9fa197b2e7647",
+    "semantic_hash": "74b8b9770446bc80ceb9fa197b2e7647"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\azmon-mirroredcatalogs-operations-cli\\references\\workspace-discovery-policy-reference.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "bd15c2410d30be72274a9c8b5611ab37",
+    "semantic_hash": "bd15c2410d30be72274a9c8b5611ab37"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\azmon-mirroredcatalogs-operations-cli\\references\\workspace-identity-connection-reference.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "b7b34c4c863125e39e62f2936c8e7db4",
+    "semantic_hash": "b7b34c4c863125e39e62f2936c8e7db4"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\databricks-migration\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "018746f84be2420c43845c936ee1f771",
+    "semantic_hash": "018746f84be2420c43845c936ee1f771"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\databricks-migration\\resources\\catalog-migration.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "0b6cb45df4a25e5ad09cec4fedc690d1",
+    "semantic_hash": "0b6cb45df4a25e5ad09cec4fedc690d1"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\databricks-migration\\resources\\code-patterns.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "3e1ff7f185aa9a3ac19244f6e48d2f53",
+    "semantic_hash": "3e1ff7f185aa9a3ac19244f6e48d2f53"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\databricks-migration\\resources\\dbutils-to-notebookutils.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "fd661acd9822c2315e4bd7801749b777",
+    "semantic_hash": "fd661acd9822c2315e4bd7801749b777"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\databricks-migration\\resources\\migration-gotchas.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "da4049db5cac422c827be66e82144ab3",
+    "semantic_hash": "da4049db5cac422c827be66e82144ab3"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\databricks-migration\\resources\\migration-orchestrator.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "084960c652c9fe00a57d450bd36cfc00",
+    "semantic_hash": "084960c652c9fe00a57d450bd36cfc00"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\databricks-migration\\resources\\validation-testing.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "b4781a7dfff0372452fa160573f166aa",
+    "semantic_hash": "b4781a7dfff0372452fa160573f166aa"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "a443179c406d9dd9e7b6e34dbd4e1a1d",
+    "semantic_hash": "a443179c406d9dd9e7b6e34dbd4e1a1d"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\authoring.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "13b8f98b65c048f3196fbd382c53bc7f",
+    "semantic_hash": "13b8f98b65c048f3196fbd382c53bc7f"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\authoring\\authoring-cli-quickref.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "465a6b459b2462bce9d100f87579c8a8",
+    "semantic_hash": "465a6b459b2462bce9d100f87579c8a8"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\authoring\\authoring-script-templates.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "5340f305e99767d4b914e0b440c344be",
+    "semantic_hash": "5340f305e99767d4b914e0b440c344be"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\authoring\\connection-management.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "e91604831237cbf9ac74ed02e7ffb0db",
+    "semantic_hash": "e91604831237cbf9ac74ed02e7ffb0db"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\authoring\\connectors.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "19fc9aa6811d99c4dffc335cbcdf9629",
+    "semantic_hash": "19fc9aa6811d99c4dffc335cbcdf9629"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\authoring\\m-language.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "aff77db948948cfe786124571ea37048",
+    "semantic_hash": "aff77db948948cfe786124571ea37048"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\authoring\\mashup-preview.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "130f4a6d321f56b1339fcbadcf93eded",
+    "semantic_hash": "130f4a6d321f56b1339fcbadcf93eded"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\authoring\\output-destinations.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "a0a06ba85205412b52f01535ed484f24",
+    "semantic_hash": "a0a06ba85205412b52f01535ed484f24"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\consumption.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "a72da4c9cca2f5a919a355c62a2064ae",
+    "semantic_hash": "a72da4c9cca2f5a919a355c62a2064ae"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\consumption\\chart-visualization.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "1a2ba026970c4b54efe90cca1d777e6e",
+    "semantic_hash": "1a2ba026970c4b54efe90cca1d777e6e"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\consumption\\consumption-cli-quickref.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "b3c1f5e11a8f1d740e613e4a3b60dc35",
+    "semantic_hash": "b3c1f5e11a8f1d740e613e4a3b60dc35"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\consumption\\discovery-queries.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "73bd9c0eacdb13c93908a686b480eebc",
+    "semantic_hash": "73bd9c0eacdb13c93908a686b480eebc"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\consumption\\script-templates.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "46886c63177c5fbcfd109b2ddfc84f76",
+    "semantic_hash": "46886c63177c5fbcfd109b2ddfc84f76"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\upgrade.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "f509dc755e253ed1330be16272217720",
+    "semantic_hash": "f509dc755e253ed1330be16272217720"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\upgrade\\risk-assessment-guide.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "4dd0d09e090ab573544c9ef87697b794",
+    "semantic_hash": "4dd0d09e090ab573544c9ef87697b794"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\dataflows-cli\\references\\upgrade\\upgrade-cli-quickref.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "2322dec647feca7c731166854aa2923b",
+    "semantic_hash": "2322dec647feca7c731166854aa2923b"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\deployment-pipelines-authoring-cli\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "cd78aa7dde552600003414e1b2939fcb",
+    "semantic_hash": "cd78aa7dde552600003414e1b2939fcb"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\deployment-pipelines-authoring-cli\\references\\supported-item-types.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "54c004fce8b353dc821163affd164a15",
+    "semantic_hash": "54c004fce8b353dc821163affd164a15"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\e2e-fabric-cost-estimation\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "b00f7ad0dcd5bd30641b369d68765f73",
+    "semantic_hash": "b00f7ad0dcd5bd30641b369d68765f73"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\e2e-fabric-cost-estimation\\resources\\cost-estimation-worksheet.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "414770e24ca1f68c28b1c3a65eca2148",
+    "semantic_hash": "414770e24ca1f68c28b1c3a65eca2148"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\e2e-fabric-cost-estimation\\resources\\pricing-api-reference.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "e2bc0054929b2c050898d36d62fb8bf6",
+    "semantic_hash": "e2bc0054929b2c050898d36d62fb8bf6"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\e2e-medallion-architecture\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "a8cc9fcaa21847dcd1f129eade380e5f",
+    "semantic_hash": "a8cc9fcaa21847dcd1f129eade380e5f"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventhouse-cli\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "7e7d2384f2675eafabceb54772dcfea7",
+    "semantic_hash": "7e7d2384f2675eafabceb54772dcfea7"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventhouse-cli\\references\\authoring-advanced-operations.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "63301ad8d02ae4c861138ad4ef4c01e2",
+    "semantic_hash": "63301ad8d02ae4c861138ad4ef4c01e2"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventhouse-cli\\references\\authoring-core.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "f46e79608a797622a340ba1df29a6a35",
+    "semantic_hash": "f46e79608a797622a340ba1df29a6a35"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventhouse-cli\\references\\authoring-scripts.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "45eb96036c66f4020beab23f68548387",
+    "semantic_hash": "45eb96036c66f4020beab23f68548387"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventhouse-cli\\references\\authoring.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "e92c60eb7b8eb033d4af7cb58ba108be",
+    "semantic_hash": "e92c60eb7b8eb033d4af7cb58ba108be"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventhouse-cli\\references\\consumption-discovery-queries.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "4cf198b6ed8a40a57a348427d6316b9d",
+    "semantic_hash": "4cf198b6ed8a40a57a348427d6316b9d"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventhouse-cli\\references\\consumption.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "26f70b4125d3d939f650d17d29f7a678",
+    "semantic_hash": "26f70b4125d3d939f650d17d29f7a678"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventschemaset-cli\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "6af286f63ec88f451125b42754ba1e6f",
+    "semantic_hash": "6af286f63ec88f451125b42754ba1e6f"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventschemaset-cli\\references\\authoring.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "0f6292e15544c44a81264531f3cdb1da",
+    "semantic_hash": "0f6292e15544c44a81264531f3cdb1da"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventschemaset-cli\\references\\consumption.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "dba4ab7525cdafa0f180d649a9978872",
+    "semantic_hash": "dba4ab7525cdafa0f180d649a9978872"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventstream-cli\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "a166a77090e673b2a25b4753e41649d3",
+    "semantic_hash": "a166a77090e673b2a25b4753e41649d3"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventstream-cli\\references\\authoring.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "cbb1d966f8d6c1b98c685eb365968565",
+    "semantic_hash": "cbb1d966f8d6c1b98c685eb365968565"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\eventstream-cli\\references\\consumption.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "2720b58d3c45393bb63ca07430b6f803",
+    "semantic_hash": "2720b58d3c45393bb63ca07430b6f803"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\fabriciq-ontology-cli\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "80529ba61980820cf8751fb7536e6d32",
+    "semantic_hash": "80529ba61980820cf8751fb7536e6d32"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\fabriciq-ontology-cli\\references\\authoring.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "5400c24ecd3c8d36c442a159a392401b",
+    "semantic_hash": "5400c24ecd3c8d36c442a159a392401b"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\fabriciq-ontology-cli\\references\\authoring\\ONTOLOGY-AUTHORING-CORE.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "5a4c598770d14960eda024ecd2ff2a80",
+    "semantic_hash": "5a4c598770d14960eda024ecd2ff2a80"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\fabriciq-ontology-cli\\references\\authoring\\authoring-mechanics.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "eb5a1b2605d8eb9b9914f38afa4af6ae",
+    "semantic_hash": "eb5a1b2605d8eb9b9914f38afa4af6ae"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\fabriciq-ontology-cli\\references\\authoring\\definition-script-templates.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "a08684a085b50d5b44b2b3aa33436a91",
+    "semantic_hash": "a08684a085b50d5b44b2b3aa33436a91"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\fabriciq-ontology-cli\\references\\authoring\\examples.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "d0913ebc54e371d58540401d11ffc02a",
+    "semantic_hash": "d0913ebc54e371d58540401d11ffc02a"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\fabriciq-ontology-cli\\references\\authoring\\preview-and-confirm.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "2d46ac807c38a621ba7abc859547a997",
+    "semantic_hash": "2d46ac807c38a621ba7abc859547a997"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\fabriciq-ontology-cli\\references\\consumption.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "846908b7b3f691fed7bbe04d234b16e4",
+    "semantic_hash": "846908b7b3f691fed7bbe04d234b16e4"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\fabriciq-ontology-cli\\references\\consumption\\examples.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "caeb6399278f8953e444c3240c45e946",
+    "semantic_hash": "caeb6399278f8953e444c3240c45e946"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\fabriciq-ontology-cli\\references\\consumption\\graph-walks.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "c4971b3fbdb1fa7adff4b5d572516581",
+    "semantic_hash": "c4971b3fbdb1fa7adff4b5d572516581"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\fabriciq-ontology-cli\\references\\consumption\\grounding-extraction.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "34bf33c42148c59db5e95d31a5ed65f3",
+    "semantic_hash": "34bf33c42148c59db5e95d31a5ed65f3"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\fabriciq-ontology-cli\\references\\consumption\\query-pattern.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "d32be516137ee7b5cadf2c53082155f4",
+    "semantic_hash": "d32be516137ee7b5cadf2c53082155f4"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\fabriciq-ontology-cli\\references\\consumption\\routing.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "8eaa6565c732c6756c09391222b4d76e",
+    "semantic_hash": "8eaa6565c732c6756c09391222b4d76e"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\fabriciq\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "d952174543a84cdf1ea4df639ccda498",
+    "semantic_hash": "d952174543a84cdf1ea4df639ccda498"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\git-integration-operations-cli\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "d5349a325f91a46705a18c3a3051ad8f",
+    "semantic_hash": "d5349a325f91a46705a18c3a3051ad8f"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\git-integration-operations-cli\\references\\automation-templates.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "6fbd15a4a3111cddce327f24d7f5ad15",
+    "semantic_hash": "6fbd15a4a3111cddce327f24d7f5ad15"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\git-integration-operations-cli\\references\\git-integration-concepts.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "232db8e6f6c119412bee16870554a281",
+    "semantic_hash": "232db8e6f6c119412bee16870554a281"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\hdinsight-migration\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "7a1b0059f6c61dc2d93073d1910bf54f",
+    "semantic_hash": "7a1b0059f6c61dc2d93073d1910bf54f"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\hdinsight-migration\\resources\\code-patterns.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "c5b6247c8217ee98741201968b331623",
+    "semantic_hash": "c5b6247c8217ee98741201968b331623"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\hdinsight-migration\\resources\\hive-to-delta.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "04c4db83583ef96e0c8db0926a5e7713",
+    "semantic_hash": "04c4db83583ef96e0c8db0926a5e7713"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\hdinsight-migration\\resources\\path-migration.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "693f6c943268a734a87188a1b689aa89",
+    "semantic_hash": "693f6c943268a734a87188a1b689aa89"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\pipeline-migration\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "354ffc87583210c9f1c61cd96f50bfcf",
+    "semantic_hash": "354ffc87583210c9f1c61cd96f50bfcf"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\pipeline-migration\\resources\\activity-mapping.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "f5f46c93f8bb7a0539b74a0a38b77c7e",
+    "semantic_hash": "f5f46c93f8bb7a0539b74a0a38b77c7e"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\pipeline-migration\\resources\\dataset-inlining.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "be69a725abf091b5ca56fcbad620a1bf",
+    "semantic_hash": "be69a725abf091b5ca56fcbad620a1bf"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\pipeline-migration\\resources\\global-parameters-to-variable-library.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "6dce1982b1be62a4523abe6bcd0838d6",
+    "semantic_hash": "6dce1982b1be62a4523abe6bcd0838d6"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\pipeline-migration\\resources\\linked-service-to-connection.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "51a8ffa1d1513bce012f21f4b44e79d3",
+    "semantic_hash": "51a8ffa1d1513bce012f21f4b44e79d3"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\pipeline-migration\\resources\\migration-report.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "c36c260cce0ea48fe67008d04980eb3a",
+    "semantic_hash": "c36c260cce0ea48fe67008d04980eb3a"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\pipeline-migration\\resources\\notebook-activity-migration.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "53a9ed490e4948c4c6736c9c407c10c4",
+    "semantic_hash": "53a9ed490e4948c4c6736c9c407c10c4"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\pipeline-migration\\resources\\pipeline-assessment.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "57ab4d19d357c4391e12b31a1548376e",
+    "semantic_hash": "57ab4d19d357c4391e12b31a1548376e"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\pipeline-migration\\resources\\pipeline-gotchas.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "a081a88107da93d61dc87e1a042fa3b4",
+    "semantic_hash": "a081a88107da93d61dc87e1a042fa3b4"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\pipeline-migration\\resources\\pipeline-orchestrator.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "391ab75eee0571c85fd98f4a07058cd5",
+    "semantic_hash": "391ab75eee0571c85fd98f4a07058cd5"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\pipeline-migration\\resources\\validation-testing.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "248dceb3a577a581a0dbbf73f8a2b1f2",
+    "semantic_hash": "248dceb3a577a581a0dbbf73f8a2b1f2"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "9928c9f45e765cc79a60672bf271c767",
+    "semantic_hash": "9928c9f45e765cc79a60672bf271c767"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\authoring.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "802c7e3ac89d97010f4cfff05fae9cc9",
+    "semantic_hash": "802c7e3ac89d97010f4cfff05fae9cc9"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\card.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "80b5d559bcb4278c0e0b0572e7eac358",
+    "semantic_hash": "80b5d559bcb4278c0e0b0572e7eac358"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\cartesian.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "a5f668c33c439fc9b4e60ebf866521fa",
+    "semantic_hash": "a5f668c33c439fc9b4e60ebf866521fa"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\color-strategy.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "05bca93d7fca1b70cd789e74e30742d5",
+    "semantic_hash": "05bca93d7fca1b70cd789e74e30742d5"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\conditional-formatting.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "b133d6fd0472e80000939d55dc1924e0",
+    "semantic_hash": "b133d6fd0472e80000939d55dc1924e0"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\expressions.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "d6c4219e82289c7e7d29eb4fd8da7b2d",
+    "semantic_hash": "d6c4219e82289c7e7d29eb4fd8da7b2d"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\filter-pane.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "734b079a44ed1c34c22e722d41c7c50f",
+    "semantic_hash": "734b079a44ed1c34c22e722d41c7c50f"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\filters.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "f3142e68f7f60c69335d25a30761abc7",
+    "semantic_hash": "f3142e68f7f60c69335d25a30761abc7"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\formatting-overview.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "3514a117f19419eeac6a609136c3949d",
+    "semantic_hash": "3514a117f19419eeac6a609136c3949d"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\formatting.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "1d796a79af86abe41741b9364f6ef466",
+    "semantic_hash": "1d796a79af86abe41741b9364f6ef466"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\image.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "c4c9b85140e9b51ff93a3e75861e944d",
+    "semantic_hash": "c4c9b85140e9b51ff93a3e75861e944d"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\map.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "112e16f3027d79ce425157ab523521a9",
+    "semantic_hash": "112e16f3027d79ce425157ab523521a9"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\page-formatting.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "aa4178a6b35fdae997182b7519c3eefc",
+    "semantic_hash": "aa4178a6b35fdae997182b7519c3eefc"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\powerbi-desktop.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "2ba909b16ab187e1b5342f75f88dbaa9",
+    "semantic_hash": "2ba909b16ab187e1b5342f75f88dbaa9"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\powerbi-report-author-cli.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "ce657037a513dbaf547f76ad65fe2d5d",
+    "semantic_hash": "ce657037a513dbaf547f76ad65fe2d5d"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\re-theming.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "df1beb30f78442131477500beb4c0603",
+    "semantic_hash": "df1beb30f78442131477500beb4c0603"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\screenshot-review.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "4317e8ec32cb23c7293d57e78d627447",
+    "semantic_hash": "4317e8ec32cb23c7293d57e78d627447"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\shape.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "9a7c64e9fd1c3b8954780866181337ad",
+    "semantic_hash": "9a7c64e9fd1c3b8954780866181337ad"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\slicers.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "67fcab9982956b54f9625164ee441562",
+    "semantic_hash": "67fcab9982956b54f9625164ee441562"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\table.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "434223d0062f6b7a3119419eb28d054c",
+    "semantic_hash": "434223d0062f6b7a3119419eb28d054c"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\textbox.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "8b69adbb6a6f31c3c7083ffd6768b107",
+    "semantic_hash": "8b69adbb6a6f31c3c7083ffd6768b107"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\theming.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "407a26e74f195fa905c310b67adee95e",
+    "semantic_hash": "407a26e74f195fa905c310b67adee95e"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-authoring\\references\\version-control.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "e3f0f7dd5a909f1e9ad1237ba572836f",
+    "semantic_hash": "e3f0f7dd5a909f1e9ad1237ba572836f"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "77fadcf8267a0bb00731d83bcdad22e1",
+    "semantic_hash": "77fadcf8267a0bb00731d83bcdad22e1"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\accessibility.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "88d44f0a3f303ba84a7815fa0bda19d8",
+    "semantic_hash": "88d44f0a3f303ba84a7815fa0bda19d8"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\anti-patterns.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "ecd4f070002a9238603826cd10f12582",
+    "semantic_hash": "ecd4f070002a9238603826cd10f12582"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\archetype-composition.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "a7219060a2cdb062fab87caf129d4021",
+    "semantic_hash": "a7219060a2cdb062fab87caf129d4021"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\archetypes\\analytical-canvas.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "a07fe755c7d2060589a2b2a43546b3d2",
+    "semantic_hash": "a07fe755c7d2060589a2b2a43546b3d2"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\archetypes\\comparative-benchmark.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "03be354633f063b391ce3de3910f509a",
+    "semantic_hash": "03be354633f063b391ce3de3910f509a"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\archetypes\\executive-summary.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "abe7b3e336c223c0f6585b737e10441a",
+    "semantic_hash": "abe7b3e336c223c0f6585b737e10441a"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\archetypes\\narrative-story.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "470e6094490f1f64d3be69e8346d1bd6",
+    "semantic_hash": "470e6094490f1f64d3be69e8346d1bd6"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\archetypes\\operational-monitor.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "3bf9e557c008c601b51798ad9a108f6e",
+    "semantic_hash": "3bf9e557c008c601b51798ad9a108f6e"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\brownfield.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "1776949bbcf23b21d88cf2a4a632b140",
+    "semantic_hash": "1776949bbcf23b21d88cf2a4a632b140"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\chart-selection.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "cf98479260d8933a9f3200acf38f4c81",
+    "semantic_hash": "cf98479260d8933a9f3200acf38f4c81"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\color.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "723437b040f645eaddf437c774be8f9c",
+    "semantic_hash": "723437b040f645eaddf437c774be8f9c"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\design-brief.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "a1ec359015ad57cd364c318a90367e04",
+    "semantic_hash": "a1ec359015ad57cd364c318a90367e04"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\interactivity.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "f020e131e3e42b1b5e2f4ca9e220eb00",
+    "semantic_hash": "f020e131e3e42b1b5e2f4ca9e220eb00"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\layout.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "c4753e0ede56956411b2bdb906e8b019",
+    "semantic_hash": "c4753e0ede56956411b2bdb906e8b019"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\pre-flight-checklist.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "948999c753e7f4bedcc3754bb8abb763",
+    "semantic_hash": "948999c753e7f4bedcc3754bb8abb763"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\signatures.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "31aed36abcf0152e636424a41d6f77cb",
+    "semantic_hash": "31aed36abcf0152e636424a41d6f77cb"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\tone-catalog.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "8760bb51e2166b4c76d4d9aa32f2133e",
+    "semantic_hash": "8760bb51e2166b4c76d4d9aa32f2133e"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\typography.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "63e3365114bed57cad38a8c8ecb13f19",
+    "semantic_hash": "63e3365114bed57cad38a8c8ecb13f19"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-design\\references\\visual-cookbook.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "9fd9d063a6b9da342608594192c4759b",
+    "semantic_hash": "9fd9d063a6b9da342608594192c4759b"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-management\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "2e1bf08eec4ab472da822257b677d168",
+    "semantic_hash": "2e1bf08eec4ab472da822257b677d168"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\powerbi-report-planning\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "73f9e053e3767d683a0d3c332022579b",
+    "semantic_hash": "73f9e053e3767d683a0d3c332022579b"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\search-consumption-cli\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "3e3cd747990e0a8065ea08781d8a8a6b",
+    "semantic_hash": "3e3cd747990e0a8065ea08781d8a8a6b"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\semantic-model-authoring\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "1d7e8c2940f8e876a67b1b85bbaee94a",
+    "semantic_hash": "1d7e8c2940f8e876a67b1b85bbaee94a"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\semantic-model-authoring\\references\\connection-binding.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "0fa474995391968e21865d0824d95b97",
+    "semantic_hash": "0fa474995391968e21865d0824d95b97"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\semantic-model-authoring\\references\\dax-guidelines.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "78aa08bc6067b68b80b08700101b4937",
+    "semantic_hash": "78aa08bc6067b68b80b08700101b4937"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\semantic-model-authoring\\references\\dax-perf-decision-guide.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "b05e7917296be89ca6380c3f68c4a623",
+    "semantic_hash": "b05e7917296be89ca6380c3f68c4a623"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\semantic-model-authoring\\references\\dax-perf-patterns.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "9bb938c120a833cfc41356974500e95b",
+    "semantic_hash": "9bb938c120a833cfc41356974500e95b"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\semantic-model-authoring\\references\\direct-lake-guidelines.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "b2b5b402244880d342b6b311249983a9",
+    "semantic_hash": "b2b5b402244880d342b6b311249983a9"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\semantic-model-authoring\\references\\metadata-discovery.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "beca59792750ab3f49fb0c82efff7b19",
+    "semantic_hash": "beca59792750ab3f49fb0c82efff7b19"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\semantic-model-authoring\\references\\modeling-guidelines.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "57c2534a9d04ea062c18fb13c11e4134",
+    "semantic_hash": "57c2534a9d04ea062c18fb13c11e4134"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\semantic-model-authoring\\references\\naming-conventions.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "e55cf2d576c8198e4076b108c51493e7",
+    "semantic_hash": "e55cf2d576c8198e4076b108c51493e7"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\semantic-model-authoring\\references\\pbip.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "4e71d492bdd289f40042605f0f385f36",
+    "semantic_hash": "4e71d492bdd289f40042605f0f385f36"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\semantic-model-authoring\\references\\semantic-model-ai-readiness.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "5e2c26a1da0df880ea04052155b9482a",
+    "semantic_hash": "5e2c26a1da0df880ea04052155b9482a"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\semantic-model-authoring\\references\\semantic-model-rest-api.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "d5f67cdef27b0c744ae18c1e07353706",
+    "semantic_hash": "d5f67cdef27b0c744ae18c1e07353706"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\semantic-model-authoring\\references\\tmdl-guidelines.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "fa5bc563603f72db2a937aa5c6a09697",
+    "semantic_hash": "fa5bc563603f72db2a937aa5c6a09697"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "bbe4e534bade388d2e39f544c4436837",
+    "semantic_hash": "bbe4e534bade388d2e39f544c4436837"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\references\\authoring.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "cd3afe95f71c06dc05e175252f0c6fbc",
+    "semantic_hash": "cd3afe95f71c06dc05e175252f0c6fbc"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\references\\authoring\\resources\\data-engineering-patterns.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "cbc2f1f54d8d8bf90f3fd51c6471fec5",
+    "semantic_hash": "cbc2f1f54d8d8bf90f3fd51c6471fec5"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\references\\authoring\\resources\\development-workflow.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "2237b78e1bb50a60427bf8de3551ee0b",
+    "semantic_hash": "2237b78e1bb50a60427bf8de3551ee0b"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\references\\authoring\\resources\\infrastructure-orchestration.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "82a5eb74ae32302c4bd353f983cb9e8c",
+    "semantic_hash": "82a5eb74ae32302c4bd353f983cb9e8c"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\references\\authoring\\resources\\materialized-lake-view-patterns.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "026bd81b3a23b9d034afc1132ddcd38b",
+    "semantic_hash": "026bd81b3a23b9d034afc1132ddcd38b"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\references\\authoring\\resources\\mlv-incremental-refresh-patterns.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "11fe1cf6f7399d79fc918c2c94a34b57",
+    "semantic_hash": "11fe1cf6f7399d79fc918c2c94a34b57"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\references\\authoring\\resources\\notebook-api-operations.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "ce200d180cb014783e8f214e25306962",
+    "semantic_hash": "ce200d180cb014783e8f214e25306962"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\references\\consumption.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "b672b971adedeeca8947563c393b18b4",
+    "semantic_hash": "b672b971adedeeca8947563c393b18b4"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\references\\mlv.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "3ba87717b653ac2f0ad3a67498853626",
+    "semantic_hash": "3ba87717b653ac2f0ad3a67498853626"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\references\\operations.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "bb65fd446110f8ba5ccb105293feb72a",
+    "semantic_hash": "bb65fd446110f8ba5ccb105293feb72a"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\references\\operations\\automated-diagnostic-workflow.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "2db18d763fd55e0895633a4237e0984c",
+    "semantic_hash": "2db18d763fd55e0895633a4237e0984c"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\references\\operations\\diagnostic-workflow.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "1d7f70f956e80f5846bf3b53d7576791",
+    "semantic_hash": "1d7f70f956e80f5846bf3b53d7576791"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\references\\operations\\job-diagnostics.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "ecc66b7aba52a960013efb5ff1d1c1bf",
+    "semantic_hash": "ecc66b7aba52a960013efb5ff1d1c1bf"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\references\\operations\\jobinsight-api.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "c7cee2f8021a2b2d775f603e7d30f02e",
+    "semantic_hash": "c7cee2f8021a2b2d775f603e7d30f02e"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\references\\operations\\performance-patterns.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "713abebf568900164faf1ec26ae0da1f",
+    "semantic_hash": "713abebf568900164faf1ec26ae0da1f"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\references\\operations\\pipeline-diagnosis.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "6fcfc5c0a2134eb269c7eccd65e66c70",
+    "semantic_hash": "6fcfc5c0a2134eb269c7eccd65e66c70"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\references\\operations\\session-health.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "5365bd9a0317b5a981f810252ac17eae",
+    "semantic_hash": "5365bd9a0317b5a981f810252ac17eae"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\spark-cli\\references\\operations\\spark-history-server.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "4d5929833cacd2c7ba7409e44bccdfdd",
+    "semantic_hash": "4d5929833cacd2c7ba7409e44bccdfdd"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\sqldb-cli\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "2e9f80c0cdeaba67632a15b0ee540f8e",
+    "semantic_hash": "2e9f80c0cdeaba67632a15b0ee540f8e"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\sqldb-cli\\references\\authoring.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "6442a971ae587f5c9df26f373a3abfd6",
+    "semantic_hash": "6442a971ae587f5c9df26f373a3abfd6"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\sqldb-cli\\references\\consumption.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "ae1454f6a19bb646288693749bfa6096",
+    "semantic_hash": "ae1454f6a19bb646288693749bfa6096"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\sqldb-cli\\references\\consumption\\discovery-queries.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "10452598d38d3dd69e44e9753df9277b",
+    "semantic_hash": "10452598d38d3dd69e44e9753df9277b"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\sqldb-cli\\references\\operations.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "54fab25dc291ebae9cbfa8241333b35a",
+    "semantic_hash": "54fab25dc291ebae9cbfa8241333b35a"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\sqldb-cli\\references\\operations\\examples.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "f4b60425ee111783336ec23fa9f13ac0",
+    "semantic_hash": "f4b60425ee111783336ec23fa9f13ac0"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\sqldb-cli\\references\\operations\\query-reference.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "07ccd5c53268985ea8575f655d118bc6",
+    "semantic_hash": "07ccd5c53268985ea8575f655d118bc6"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\sqldw-cli\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "0c8394721917e16401b9ff14a5140b84",
+    "semantic_hash": "0c8394721917e16401b9ff14a5140b84"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\sqldw-cli\\references\\authoring.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "011b466d2d1afd1f45b6a12d009bc3de",
+    "semantic_hash": "011b466d2d1afd1f45b6a12d009bc3de"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\sqldw-cli\\references\\authoring\\authoring-cli-quickref.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "882152ed952789a212d5240209f30fb4",
+    "semantic_hash": "882152ed952789a212d5240209f30fb4"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\sqldw-cli\\references\\authoring\\authoring-script-templates.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "9ee6effb39725ba208f7f5275d32974f",
+    "semantic_hash": "9ee6effb39725ba208f7f5275d32974f"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\sqldw-cli\\references\\consumption.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "1ff366b6df55d4c95393004d903f5626",
+    "semantic_hash": "1ff366b6df55d4c95393004d903f5626"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\sqldw-cli\\references\\consumption\\consumption-cli-quickref.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "155281e01816f025937515b217ed2643",
+    "semantic_hash": "155281e01816f025937515b217ed2643"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\sqldw-cli\\references\\consumption\\discovery-queries.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "bde8ffd8accc7c6594e1cd0749205e34",
+    "semantic_hash": "bde8ffd8accc7c6594e1cd0749205e34"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\sqldw-cli\\references\\consumption\\script-templates.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "960e37c37a66a11d89682f8ba174580d",
+    "semantic_hash": "960e37c37a66a11d89682f8ba174580d"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\sqldw-cli\\references\\operations.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "ac4831ac0fd2ae122ef9100263cccca6",
+    "semantic_hash": "ac4831ac0fd2ae122ef9100263cccca6"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\sqldw-cli\\references\\operations\\query-reference.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "93fc1cf45cb4540c59aa01b551bcf461",
+    "semantic_hash": "93fc1cf45cb4540c59aa01b551bcf461"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "3afe80e3af7f1c05dbb40c25e701dc24",
+    "semantic_hash": "3afe80e3af7f1c05dbb40c25e701dc24"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\capacity-sizing.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "5a9839a8a39ce7cfaacf41354cb1c8b0",
+    "semantic_hash": "5a9839a8a39ce7cfaacf41354cb1c8b0"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\code-patterns.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "3706b26db22cc7789cedeb2681e09ef6",
+    "semantic_hash": "3706b26db22cc7789cedeb2681e09ef6"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\connectivity-migration.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "14fc2312a628045c849747854b537859",
+    "semantic_hash": "14fc2312a628045c849747854b537859"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\connector-refactoring.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "7c2715b4d9bcafd0b897a032e50470f9",
+    "semantic_hash": "7c2715b4d9bcafd0b897a032e50470f9"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\dedicated-pool-conversion.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "fbedd01be79da9418134bde254c60617",
+    "semantic_hash": "fbedd01be79da9418134bde254c60617"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\dedicated-pool-deployment.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "a1f0962074fa5ee6eaf9ec64c2fbd1ae",
+    "semantic_hash": "a1f0962074fa5ee6eaf9ec64c2fbd1ae"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\dedicated-pool-discovery.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "09c7a39fd05760a68bae652ab9ddabce",
+    "semantic_hash": "09c7a39fd05760a68bae652ab9ddabce"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\dedicated-pool-gap-assessment.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "a1d868ab747d0b36bef9b0a5778d8428",
+    "semantic_hash": "a1d868ab747d0b36bef9b0a5778d8428"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\dedicated-pool-large-procedure-audit.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "305fae1deadaf8d9a0aecc83f5e09106",
+    "semantic_hash": "305fae1deadaf8d9a0aecc83f5e09106"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\dedicated-pool-to-lakehouse.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "71334f705db8ed6dd717097c6dc76df7",
+    "semantic_hash": "71334f705db8ed6dd717097c6dc76df7"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\dedicated-pool-validation.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "414bc11221a7a3f42dc46d8e0d0de027",
+    "semantic_hash": "414bc11221a7a3f42dc46d8e0d0de027"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\external-hms-migration.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "4ab0a8dc682340ddba1f4e500a080eb0",
+    "semantic_hash": "4ab0a8dc682340ddba1f4e500a080eb0"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\feature-parity.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "ae9219be26ae28ec81d2f9d6d2f8c180",
+    "semantic_hash": "ae9219be26ae28ec81d2f9d6d2f8c180"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\lake-database-migration.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "da40f4e8013e08eb493dc2fcc14bc8d4",
+    "semantic_hash": "da40f4e8013e08eb493dc2fcc14bc8d4"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\library-compatibility.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "bd83715eec021cd81608b91b61cd586e",
+    "semantic_hash": "bd83715eec021cd81608b91b61cd586e"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\migration-gotchas.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "a096ec1387a503a51b2855195a10d38b",
+    "semantic_hash": "a096ec1387a503a51b2855195a10d38b"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\migration-orchestrator.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "e96b409799dc9d068c175b8f8a44c511",
+    "semantic_hash": "e96b409799dc9d068c175b8f8a44c511"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\migration-report.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "4ed364ec72be99f21729b0897932f63d",
+    "semantic_hash": "4ed364ec72be99f21729b0897932f63d"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\security-governance.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "be6afee9e93fc94f138ae0ba3caadd76",
+    "semantic_hash": "be6afee9e93fc94f138ae0ba3caadd76"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\spark-item-migration.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "fa9b3564c3b844d92d7ab5e46eb1dc50",
+    "semantic_hash": "fa9b3564c3b844d92d7ab5e46eb1dc50"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\spark-pool-migration.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "a77b01fb3821e4b9017bc59298e89f3a",
+    "semantic_hash": "a77b01fb3821e4b9017bc59298e89f3a"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\utility-api-mapping.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "588a89dce5d6b1cd2f318021d7eb6074",
+    "semantic_hash": "588a89dce5d6b1cd2f318021d7eb6074"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\synapse-migration\\resources\\validation-testing.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "9e6dec66570b6cc3f57783b80e1fb395",
+    "semantic_hash": "9e6dec66570b6cc3f57783b80e1fb395"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\variable-library-cli\\SKILL.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "50b82fbd5eacd6a1ac616b8c80bd6377",
+    "semantic_hash": "50b82fbd5eacd6a1ac616b8c80bd6377"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\variable-library-cli\\references\\authoring.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "5710f04557051b855b5e69154ec5a7e5",
+    "semantic_hash": "5710f04557051b855b5e69154ec5a7e5"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\variable-library-cli\\references\\consumption.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "688b83f81f7f5d422acabd102fe666dd",
+    "semantic_hash": "688b83f81f7f5d422acabd102fe666dd"
+  },
+  "C:\\Work\\Work\\Personal\\Ray_Complete_Project\\ray\\src\\ray_de\\upstream\\skills\\variable-library-cli\\references\\operations.md": {
+    "mtime": 1788618586.0,
+    "ast_hash": "2b6cb4bb70107b81568a421586508b55",
+    "semantic_hash": "2b6cb4bb70107b81568a421586508b55"
+  }
+}

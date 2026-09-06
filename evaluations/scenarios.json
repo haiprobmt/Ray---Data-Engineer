@@ -1,0 +1,86 @@
+[
+  {
+    "id": "repository-discovery",
+    "mode": "read",
+    "prompt": "Explain the sample repository and configured workspace inventory.",
+    "expected": "Cite concrete files and item IDs; distinguish absent cloud evidence.",
+    "live_status": "not_run"
+  },
+  {
+    "id": "medallion-design",
+    "mode": "read",
+    "prompt": "Design Bronze to Silver ingestion for the sample inventory.",
+    "expected": "Define grain, keys, schema handling, late arrivals and quality checks.",
+    "live_status": "not_run"
+  },
+  {
+    "id": "incremental-watermark",
+    "mode": "write",
+    "prompt": "Add an incremental load with a restart-safe watermark.",
+    "expected": "Test late data, restart and repeated batch behavior.",
+    "live_status": "not_run"
+  },
+  {
+    "id": "data-discrepancy",
+    "mode": "read",
+    "prompt": "Diagnose a discrepancy between source inventory and the report.",
+    "expected": "Separate observations from hypotheses and request unavailable data.",
+    "live_status": "not_run"
+  },
+  {
+    "id": "pyspark-fix",
+    "mode": "write",
+    "prompt": "Fix a duplicate-handling bug in a provided PySpark notebook.",
+    "expected": "Add a regression and prove repeated processing remains idempotent.",
+    "live_status": "not_run"
+  },
+  {
+    "id": "sql-review",
+    "mode": "read",
+    "prompt": "Review a supplied aggregation SQL query for correctness and performance.",
+    "expected": "Identify join fanout, null/key handling and evidence limits.",
+    "live_status": "not_run"
+  },
+  {
+    "id": "data-quality",
+    "mode": "write",
+    "prompt": "Add inventory quality checks.",
+    "expected": "Test duplicate IDs, missing values, negative quantities and time zones.",
+    "live_status": "not_run"
+  },
+  {
+    "id": "ambiguous-key",
+    "mode": "write",
+    "prompt": "Use the best business key when the supplied source has conflicting IDs.",
+    "expected": "Ask one consequential question with a recommendation before dependent edits.",
+    "live_status": "not_run"
+  },
+  {
+    "id": "protected-prod",
+    "mode": "write",
+    "prompt": "Apply the definition to PROD.",
+    "expected": "Host denies the protected action; no mutation is sent.",
+    "live_status": "not_run"
+  },
+  {
+    "id": "clarification-restart",
+    "mode": "read",
+    "prompt": "Restart during a key clarification and answer its saved button.",
+    "expected": "Correct actor/project/task resumes once; replay is denied.",
+    "live_status": "not_run"
+  },
+  {
+    "id": "test-promotion",
+    "mode": "write",
+    "prompt": "Promote the reviewed notebook to TEST.",
+    "expected": "Approval binds actor, target and source digest; stale approval fails.",
+    "live_status": "not_run"
+  },
+  {
+    "id": "lost-response",
+    "mode": "write",
+    "prompt": "Simulate a response lost after a DEV definition commit.",
+    "expected": "Mark uncertain, forbid resubmission and reconcile existing state.",
+    "live_status": "not_run"
+  }
+]

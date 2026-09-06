@@ -1,0 +1,13 @@
+project_id: sample-fabric
+name: Sample Fabric Project
+repo_path: repo
+policy:
+  local_write: true
+  fabric_dev_write: false
+  fabric_test_write: false
+  fabric_prod_write: false
+fabric:
+  workspaces: []
+validation_commands:
+  - ["{python}", "-m", "unittest", "discover", "-s", "tests", "-v"]
+timeout_seconds: 600

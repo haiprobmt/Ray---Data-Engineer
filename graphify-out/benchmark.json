@@ -1,0 +1,36 @@
+{
+  "corpus_tokens": 702581,
+  "corpus_words": 526936,
+  "nodes": 2038,
+  "edges": 2831,
+  "avg_query_tokens": 6688,
+  "reduction_ratio": 105.1,
+  "per_question": [
+    {
+      "question": "how does authentication work",
+      "query_tokens": 5066,
+      "reduction": 138.7
+    },
+    {
+      "question": "what is the main entry point",
+      "query_tokens": 2970,
+      "reduction": 236.6
+    },
+    {
+      "question": "how are errors handled",
+      "query_tokens": 8376,
+      "reduction": 83.9
+    },
+    {
+      "question": "what connects the data layer to the api",
+      "query_tokens": 9961,
+      "reduction": 70.5
+    },
+    {
+      "question": "what are the core abstractions",
+      "query_tokens": 7068,
+      "reduction": 99.4
+    }
+  ],
+  "measurement_note": "Estimated context size, not actual billable usage or an answer-quality measurement. Uses detected corpus words rather than CLI node-count estimate."
+}

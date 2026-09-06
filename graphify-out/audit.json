@@ -1,0 +1,46 @@
+{
+  "scope": "Static project code and document extraction; no application or cloud execution",
+  "detected_files": 318,
+  "sensitive_files_skipped": 2,
+  "semantic_files": 263,
+  "semantic_chunks": 12,
+  "files_without_extracted_nodes": [
+    "docs\\verification.json",
+    "evaluations\\scenarios.json",
+    "src\\ray_de\\upstream\\source.json"
+  ],
+  "token_usage_available": false,
+  "graph_nodes": 2038,
+  "graph_edges": 2831,
+  "all_documents_represented_in_final_graph": true,
+  "source_disagreements": [
+    {
+      "topic": "Spark vCore to Fabric CU ratio",
+      "sources": [
+        "src/ray_de/upstream/skills/synapse-migration/resources/capacity-sizing.md:L9-L30",
+        "src/ray_de/upstream/skills/e2e-fabric-cost-estimation/SKILL.md:L137"
+      ],
+      "status": "Conflicting bundled guidance; not externally verified; retained as AMBIGUOUS in graph"
+    }
+  ],
+  "communities": 183,
+  "graph_type": "undirected; original edge direction stored in _src/_tgt",
+  "limitations": [
+    "Static extraction is not runtime acceptance evidence.",
+    "External or unresolved endpoints are omitted by graphify.",
+    "Multiple relationships between the same node pair may collapse in the undirected graph.",
+    "Bundled reference documentation describes upstream capabilities, not necessarily implemented Ray behavior.",
+    "AST confidence scores are preserved from the installed extractor; some inferred edges are unscored."
+  ],
+  "html_visual_check": "Unavailable: CUA reported no browser available",
+  "html_dependency": "Pinned vis-network 9.1.6 bundled inline after SHA384 verification",
+  "graphify_version": "0.8.44",
+  "html_javascript_syntax_check": "Passed node --check",
+  "checks": [
+    "All 263 documents represented in final graph",
+    "Unique final node IDs",
+    "All graph edge endpoints resolve",
+    "Canonical Control to CloudActions traversal succeeds",
+    "HTML library SHA384 matches exporter integrity pin"
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "dataset_version": "1.0",
+  "purpose": "Evaluator-only ground truth. Do not expose this file to Ray during the test.",
+  "known_issues": {
+    "customers_raw.csv": [
+      "Duplicate SAP customer_id 001005",
+      "One missing SAP customer ID",
+      "One missing customer_number",
+      "Leading-zero SAP ID 000123 must remain a string"
+    ],
+    "sales_raw.csv": [
+      "Duplicate order_id SO5005",
+      "One negative amount",
+      "One null customer",
+      "One unknown plant 9999",
+      "One invalid order date 2026-13-01",
+      "One order uses leading-zero customer 000123"
+    ],
+    "inventory_raw.csv": [
+      "Duplicate natural key for plant 1005 / material MAT-1005-03",
+      "Invalid quantity 'abc'",
+      "Negative quantity/value row",
+      "One row with missing plant",
+      "Plant 1005 has significant inventory value"
+    ],
+    "plant_mapping_raw.csv": [
+      "Plant 1005 has conflicting mappings",
+      "1A05 mapping excludes plant 1005 from reporting",
+      "Legacy 1005 mapping includes the same plant"
+    ],
+    "business_rules.json": [
+      "Active Customer documented definition conflicts with legacy implementation",
+      "Customer identifier preservation conflicts with legacy numeric-cast pattern"
+    ]
+  },
+  "expected_ray_behaviors": {
+    "T01": "Inspect first; identify customer key ambiguity and leading-zero risk; ask a focused consequential question only if needed.",
+    "T03": "Detect duplicate OrderId and invalid sales records; design incremental/idempotent aggregation.",
+    "T04": "Enforce schema, deduplicate, quarantine invalid inventory rows, preserve valid rows.",
+    "T05": "Trace discrepancy to plant/warehouse mapping and quantify the 1005 impact rather than guessing.",
+    "T06": "Recognize conflicting Active Customer definitions and request business confirmation before changing KPI logic."
+  },
+  "raw_inventory_valid_nonnegative_total_including_duplicates": 2396000.0,
+  "raw_inventory_valid_nonnegative_totals_by_plant_including_duplicates": {
+    "1001": 550000.0,
+    "1005": 1296000.0,
+    "1010": 550000.0
+  }
+}

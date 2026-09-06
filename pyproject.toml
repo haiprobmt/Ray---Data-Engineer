@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ray-fabric-engineer"
+version = "0.2.0"
+description = "Ray engineering assistant with governed Fabric actions and durable Telegram control"
+requires-python = ">=3.11"
+dependencies = ["openai-codex==0.147.0", "PyYAML==6.0.2", "pydantic==2.13.5"]
+
+[project.optional-dependencies]
+fabric = ["ms-fabric-cli==1.7.0", "pyodbc==5.3.0"]
+test = ["pytest==9.1.1"]
+
+[project.scripts]
+ray = "ray_de.cli:main"
+ray-telegram = "ray_de.telegram:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+ray_de = ["prompts/*.md", "playbooks/*.md", "upstream/**/*", "upstream/LICENSE", "upstream/source.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+

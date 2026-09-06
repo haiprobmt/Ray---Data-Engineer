@@ -1,0 +1,5 @@
+plant_code,warehouse_code,plant_name,status,include_in_reporting
+1001,1A01,Central Plant,ACTIVE,Y
+1005,1A05,North Plant,INACTIVE,N
+1010,1A10,South Plant,ACTIVE,Y
+1005,1005,North Plant Legacy,ACTIVE,Y

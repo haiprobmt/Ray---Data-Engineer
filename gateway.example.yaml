@@ -1,0 +1,14 @@
+# Local-only default: no Telegram user is enabled.
+projects:
+  sample-fabric: projects/sample-fabric/config.yaml
+access: []
+# To enable privately later, replace access with explicit numeric IDs:
+# access:
+#   - user_id: YOUR_NUMERIC_USER_ID
+#     chat_id: YOUR_NUMERIC_PRIVATE_CHAT_ID
+#     projects: [sample-fabric]
+# Token is stored separately with ray secret-set. Never put it here.
+# Optional chat enrollment (setup-telegram.ps1 configures this automatically):
+# workspace_root: C:/Users/YOU/AppData/Local/Ray/workspaces
+# Add allow_workspace_setup: true to the specific access entry permitted to enroll.
+# workspace_root must not overlap state or any existing project's directory/repo.

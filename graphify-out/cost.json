@@ -1,0 +1,14 @@
+{
+  "runs": [
+    {
+      "date": "2026-09-05T15:20:00.882824+00:00",
+      "input_tokens": null,
+      "output_tokens": null,
+      "files": 318,
+      "usage_available": false,
+      "note": "Host subagent API does not expose usage; zero placeholders in intermediate extraction are not measured cost."
+    }
+  ],
+  "total_input_tokens": null,
+  "total_output_tokens": null
+}

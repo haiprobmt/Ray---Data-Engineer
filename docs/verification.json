@@ -1,0 +1,25 @@
+{
+  "release": "0.2.0",
+  "scope": "Sprints 1-6 local POC; live acceptance not performed",
+  "automated_tests": {
+    "passed": 117,
+    "failed": 0,
+    "errors": 0,
+    "seconds": 46.366
+  },
+  "sample_inventory_tests_passed": 2,
+  "offline_demo_checks_passed": 10,
+  "wheel_install_and_offline_smoke": "passed",
+  "wheel_source_and_vendored_hashes": "passed",
+  "vendored_files": 260,
+  "dependency_check": "pip check passed",
+  "format_and_name_checks": "Ruff 0.12.12 passed",
+  "powershell": "Static parser validation passed; no startup task registered",
+  "startup_preview": "Not executed; automatic approval review blocked the preview command",
+  "python": "3.12.14",
+  "model_and_fabric_responses_in_tests": "synthetic",
+  "live_model_turns": "not run",
+  "live_fabric_and_telegram": "not connected",
+  "cloud_writes_in_sample_config": false,
+  "wheel_sha256": "e3c28d8fa9c8d4565f97011334601028f3eced35ba7a379a27d735bfabc66825"
+}

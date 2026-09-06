@@ -1,0 +1,7 @@
+{
+  "T01_clarification": "Build a customer Silver table in Fabric from the provided CRM/SAP customer data. Investigate the files first. Ask me only if an important business or architecture decision cannot be determined from evidence.",
+  "T03_sql": "Create an incremental Gold monthly sales aggregation by customer. Make it idempotent and validate the raw data first.",
+  "T04_pyspark": "Build a Silver transformation for inventory_raw.csv following our Fabric standards. Do not silently drop invalid records.",
+  "T05_discrepancy": "Our source inventory total does not match the reporting total. Investigate the discrepancy end-to-end and show evidence of where the difference appears.",
+  "T06_business_ambiguity": "Fix the Active Customer KPI based on the supplied customer and sales data plus business_rules.json. Do not guess if definitions conflict."
+}

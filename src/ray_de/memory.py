@@ -5,8 +5,10 @@ from contextlib import closing
 from datetime import datetime, timezone
 from .state import now
 
+SECRET_KEY = r"(?:password|passwd|pwd|client[_-]?secret|api[_-]?key|access[_-]?token|refresh[_-]?token|authorization|accountkey|sharedaccesssignature)"
 SECRET = re.compile(
-    r'(?i)(?:bearer\s+[A-Za-z0-9._-]{15,}|sk-[A-Za-z0-9_-]{15,}|\d{6,}:[A-Za-z0-9_-]{25,}|(?:password|client_secret|api_key|access_token)\s*[:=]\s*["\']?[^\s"\']{6,})'
+    r'(?i)(?:bearer\s+[A-Za-z0-9._-]{15,}|sk-[A-Za-z0-9_-]{15,}|\d{6,}:[A-Za-z0-9_-]{25,}|\b'
+    + SECRET_KEY + r'''["']?\s*[:=]\s*(?:"[^"\r\n]{6,}"|'[^'\r\n]{6,}'|[^\s"',;}{]{6,}))'''
 )
 
 
@@ -20,6 +22,29 @@ def safe_text(text, limit=32000):
 
 def redact(text):
     return SECRET.sub("[REDACTED]", str(text))
+
+
+def redact_data(value):
+    """Keep field context when removing credentials from structured observations."""
+    if isinstance(value, str):
+        return redact(value)
+    if isinstance(value, (list, tuple)):
+        return [redact_data(v) for v in value]
+    if isinstance(value, dict):
+        result = {
+            redact(k): "[REDACTED]" if re.fullmatch(SECRET_KEY, str(k), re.I) and v
+            else redact_data(v)
+            for k, v in value.items()
+        }
+        columns, rows = value.get("columns"), result.get("rows")
+        if isinstance(columns, list) and isinstance(rows, list):
+            sensitive = {i for i, name in enumerate(columns) if re.fullmatch(SECRET_KEY, str(name), re.I)}
+            result["rows"] = [
+                ["[REDACTED]" if i in sensitive and cell is not None else cell for i, cell in enumerate(row)]
+                if isinstance(row, list) else row for row in rows
+            ]
+        return result
+    return value
 
 
 def save_decision(project, title, context, decision, consequences, actor):

@@ -17,6 +17,10 @@ def relevant_guidance(message):
     # Small, transparent router; never execute vendored scripts or register MCP.
     selections = []
     text = message.lower()
+    if any(word in text for word in ("tenant", "git integration", "github", "provision", "capacity", "permission", "connection administration", "fmd", "fabric metadata-driven framework")):
+        selections.append((Path(__file__).with_name("playbooks") / "tenant.md").read_text(encoding="utf-8"))
+    if "fmd" in text or "fabric metadata-driven framework" in text:
+        selections.append((Path(__file__).with_name("playbooks") / "fmd.md").read_text(encoding="utf-8"))
     for words, skill in [
         (("workspace", "discover", "inspect"), "search-consumption-cli"),
         (("spark", "notebook", "lakehouse"), "spark-cli"),

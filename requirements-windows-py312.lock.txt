@@ -10,6 +10,8 @@ charset-normalizer==3.5.1
 colorama==0.4.6
 cryptography==50.0.1
 dpath==2.2.0
+defusedxml==0.7.1
+et-xmlfile==2.0.0
 fabric-cicd==1.3.0
 filetype==1.2.0
 idna==3.19
@@ -21,6 +23,7 @@ msal==1.38.0
 msal-extensions==1.3.1
 openai-codex==0.147.0
 openai-codex-cli-bin==0.147.0
+openpyxl==3.1.5
 packaging==26.3
 pluggy==1.6.0
 prompt_toolkit==3.0.53
@@ -32,6 +35,7 @@ Pygments==2.21.0
 PyJWT==2.13.0
 pymsalruntime==0.20.6
 pyodbc==5.3.0
+pypdf==6.17.0
 pytest==9.1.1
 PyYAML==6.0.2
 questionary==2.1.1
@@ -42,3 +46,4 @@ typing_extensions==4.16.0
 urllib3==2.7.0
 wcwidth==0.8.3
 wheel==0.48.0
+xlrd==2.0.2

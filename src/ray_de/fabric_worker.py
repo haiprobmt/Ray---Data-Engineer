@@ -31,10 +31,18 @@ def request(method, endpoint, payload=None, *, token=None, opener=None):
     ):
         raise ValueError("Invalid Fabric endpoint")
     query = parse_qs(uri.query, keep_blank_values=True, strict_parsing=True)
-    if set(query) - {"continuationToken", "format"} or any(
+    if set(query) - {"continuationToken", "format", "beta"} or any(
         len(v) != 1 for v in query.values()
     ):
         raise ValueError("Unsupported query")
+    if "beta" in query:
+        guid = r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        notebook_output = (method == "get" and query == {"beta": ["true"]} and re.fullmatch(
+            rf"workspaces/{guid}/notebooks/{guid}/jobs/execute/instances/{guid}", uri.path))
+        environment_publish = (method == "post" and query == {"beta": ["false"]} and re.fullmatch(
+            rf"workspaces/{guid}/environments/{guid}/staging/publish", uri.path))
+        if not (notebook_output or environment_publish):
+            raise ValueError("Unsupported versioned Fabric route")
     if "format" in query and (not uri.path.endswith("/getDefinition") or not re.fullmatch(r"[A-Za-z][A-Za-z0-9_-]{0,79}", query["format"][0])):
         raise ValueError("Unsupported format")
     url = "https://api.fabric.microsoft.com/v1/" + uri.path
@@ -46,10 +54,13 @@ def request(method, endpoint, payload=None, *, token=None, opener=None):
         from fabric_cli.core.fab_auth import FabAuth
         from fabric_cli.core.fab_exceptions import FabricCLIError
         from fabric_cli.core import fab_constant
+        from ray_de.fabric_auth import load_service_principal
         try:
-            token = FabAuth().get_access_token(
+            token = load_service_principal(FabAuth()).get_access_token(
                 ["https://api.fabric.microsoft.com/.default"], interactive_renew=False
             )
+        except PermissionError:
+            raise SignInRequired("Local SP credential needs enrollment") from None
         except FabricCLIError as exc:
             if exc.status_code == fab_constant.ERROR_AUTHENTICATION_FAILED:
                 raise SignInRequired("Local Fabric sign-in needs renewal") from None

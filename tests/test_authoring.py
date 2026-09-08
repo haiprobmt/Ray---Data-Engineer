@@ -157,6 +157,31 @@ def test_create_rechecks_authorization(authoring, reason):
     assert not f.writes
 
 
+@pytest.mark.parametrize("operation", ["create_item", "update_item"])
+@pytest.mark.parametrize("change", ["source", "expiry"])
+def test_item_preflight_rechecks_after_remote_reads(authoring, monkeypatch, operation, change):
+    p, s, t, f, c = authoring
+    f.items[ITEM] = {"id": ITEM, "displayName": "before", "type": "Lakehouse"}
+    action = plan(authoring, operation, payload={"displayName": "after"} if operation == "update_item" else None)
+    original = f.request
+
+    def request(method, endpoint, payload=None):
+        result = original(method, endpoint, payload)
+        if method == "get":
+            if change == "source":
+                (p.repo / "main.py").write_text("answer = 99\n")
+            else:
+                with s.connect() as db:
+                    db.execute("UPDATE plans SET expires=0 WHERE id=?", (action["id"],))
+        return result
+
+    monkeypatch.setattr(f, "request", request)
+    with pytest.raises(PolicyError):
+        c.execute(action["id"], ACTOR)
+    assert not f.writes
+    assert c.get(action["id"])["state"] == "READY"
+
+
 @pytest.mark.parametrize("path", ["../outside.py", "C:/outside.py", ".codex/config.json", "AGENTS.md", "nested/SKILL.md"])
 def test_artifacts_reject_escape_and_instruction_files(authoring, path):
     p = authoring[0]
@@ -171,6 +196,16 @@ def test_artifacts_validate_all_before_writing(authoring):
         materialize(p, [LocalArtifact(path="first.py", content="x=1"), LocalArtifact(path="bad.py", content="invalid (")])
     assert not (p.repo / "first.py").exists()
     materialize(p, [LocalArtifact(path="item.json", content='{"displayName":"sample","type":"Lakehouse"}')])
+    assert validate_sources(p.repo) >= 1
+
+
+@pytest.mark.parametrize("directory", ["node_modules", "venv", "__pycache__"])
+def test_source_validation_and_compilation_ignore_dependencies(authoring, directory):
+    p = authoring[0]
+    vendor = p.repo / directory
+    vendor.mkdir(exist_ok=True)
+    (vendor / "example.json").write_text("{ vendor sample is not project source }")
+    compile_definitions(p)
     assert validate_sources(p.repo) >= 1
 
 
@@ -189,6 +224,18 @@ def test_source_parts_compile_before_review_without_model_base64(authoring):
     (p.repo / "create.json").write_text(json.dumps(payload))
     with pytest.raises(ValueError, match="inside"):
         compile_definitions(p)
+
+
+def test_sourcefile_validation_needs_no_temporary_rewrite(authoring):
+    p = authoring[0]
+    source = p.repo / "pipeline.json"
+    source.write_text('{"properties":{"activities":[]}}')
+    path = p.repo / "new_definition.json"
+    path.write_text(json.dumps({"definition": {"parts": [{"path": "pipeline-content.json",
+        "source": "pipeline.json", "payloadType": "SourceFile"}]}}))
+    before = path.read_bytes(), source.read_bytes()
+    assert validate_sources(p.repo) >= 1
+    assert (path.read_bytes(), source.read_bytes()) == before
 
 
 def test_definition_json_reformatting_preserves_complete_semantics():

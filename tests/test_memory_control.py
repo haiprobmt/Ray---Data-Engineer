@@ -79,6 +79,17 @@ def test_memory_rejects_secret(project):
         save_decision(project, "Secret", "password=abcdefgh", "x", "x", "a")
 
 
+@pytest.mark.parametrize("key", ["client_secret", "access_token", "refresh_token", "api_key", "password"])
+def test_json_credentials_cannot_enter_memory_or_task_objectives(project, store, key):
+    from ray_de.memory import safe_text, redact
+    text = json.dumps({key: "synthetic-private-value"})
+    with pytest.raises(ValueError):
+        safe_text(text)
+    assert "synthetic-private-value" not in redact(text)
+    with pytest.raises(ValueError):
+        store.create(project.id, text, "read")
+
+
 def test_backup_detects_modified_db(tmp_path):
     p, s, t, f, c = fixture(tmp_path / "case")
     out = tmp_path / "backup.zip"

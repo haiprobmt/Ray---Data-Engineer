@@ -8,6 +8,7 @@ from uuid import UUID
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, model_validator
+from .tenant_config import TenantConfig
 
 
 class StrictModel(BaseModel):
@@ -55,6 +56,7 @@ class WriteTarget(StrictModel):
 
 
 class FabricConfig(StrictModel):
+    tenant: TenantConfig | None = None
     workspaces: list[Workspace] = Field(default_factory=list)
     write_targets: list[WriteTarget] = Field(default_factory=list)
     allow_definition_export: bool = False
@@ -75,6 +77,12 @@ class FabricConfig(StrictModel):
             raise ValueError(
                 "Write targets must be unique and belong to configured workspaces"
             )
+        if self.tenant:
+            for entry in [*self.tenant.grants, *(self.tenant.github.workspaces if self.tenant.github else [])]:
+                if entry.workspace and not entry.workspace.startswith("@"):
+                    match = next((w for w in self.workspaces if w.id.lower() == entry.workspace.lower()), None)
+                    if match is None or match.environment != entry.environment:
+                        raise ValueError("Tenant capability workspace must match its enrolled environment")
         return self
 
 
@@ -132,10 +140,27 @@ class Project:
         self.id = config.project_id
 
     @property
+    def workspaces(self):
+        result = list(self.config.fabric.workspaces)
+        tenant = self.config.fabric.tenant
+        store = getattr(self, "state_store", None)
+        if tenant and store:
+            resources = store.tenant_resources(self)
+            for grant in tenant.grants:
+                resource = resources.get(grant.key, {})
+                if grant.operation == "create_workspace" and resource.get("kind") == "workspace":
+                    entry = Workspace(id=resource["id"], environment=grant.environment)
+                    if all(w.id.lower() != entry.id.lower() for w in result):
+                        result.append(entry)
+        return result
+
+    @property
     def binding(self) -> str:
         # Bind tasks to both their repository and policy, so configuration changes
         # cannot silently resume an old thread with a different target or privilege.
         config = self.config.model_dump()
+        if config["fabric"]["tenant"] is None:
+            config["fabric"].pop("tenant")
         if not config["post_validation_commands"]:
             config.pop("post_validation_commands")
         if not config["fabric"]["write_targets"]:

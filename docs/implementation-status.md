@@ -1,5 +1,16 @@
 # Implementation status — Ray 0.2.0
 
+## Tenant and Git deployment extension
+
+Ray now implements tenant-bound workspace creation/capacity assignment, execution
+identities, scoped roles and groups, protected connection administration, native
+Git import/folder allocation, personal GitHub publication and Fabric Git sync.
+All are explicit capabilities under the existing source/reviewer/receipt policy;
+TEST needs exact approval and PROD/deletion remain disabled. Initial administrator
+bootstrap and actual tenant/repository enrollment are still required. See
+[tenant deployment](tenant-git-deployment.md) for supported operations, configuration,
+native format limits and the distinction between offline tests and live acceptance.
+
 ## Lakehouse read extension
 
 The host now enriches inventory snapshots with bounded Lakehouse detail reads and
@@ -16,7 +27,8 @@ project for an enrolled DEV/TEST workspace. Generic item creation, metadata PATC
 definition updates and supported job execution use `cloud.py`, scoped to configured
 workspaces. `workspace_write` resolves existing item types from live metadata instead
 of requiring a manually maintained item list; `create_items` enables Items API creation.
-PROD/destructive/admin operations remain unavailable. Checked-in examples stay local-only.
+PROD/destructive operations remain unavailable. Administration requires the explicit
+tenant capabilities described above. Checked-in examples stay local-only.
 
 Structured source artifacts and SourceFile definition compilation support runtimes
 whose model file tools are unavailable. Validation and fresh independent review precede
@@ -62,7 +74,7 @@ task success, complete audit and demonstrated approval/rollback behavior. Synthe
 tests do not establish those live rates. Real credentials, permissions, linked
 resources, data checks and Windows containment remain environment-specific acceptance.
 
-PROD/destructive/admin actions are unsupported. Teams, WhatsApp, voice, email, GitHub
+At original delivery, PROD/destructive/admin actions were unsupported. Teams, WhatsApp, voice, email, GitHub
 and broader Power BI operations remain the blueprint's explicitly deferred backlog.
 
 Sources: [Codex SDK](https://learn.chatgpt.com/docs/codex-sdk),

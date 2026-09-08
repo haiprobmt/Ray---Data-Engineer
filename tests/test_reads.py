@@ -11,6 +11,40 @@ from ray_de.service import TaskService
 from test_recovery import output
 
 
+def test_notebook_output_read_is_workspace_bound_and_receipt_checked(project, store, tmp_path):
+    job = "33333333-3333-3333-3333-333333333333"
+    calls = []
+    def execute(endpoint):
+        calls.append(endpoint)
+        return {"id": job, "itemId": ITEM, "properties": {"exitValue": "ok"}}
+    gate = FabricGateway(project, store, tmp_path, executor=execute)
+    assert gate.notebook_job(WS, ITEM, job)["properties"]["exitValue"] == "ok"
+    assert calls == [f"workspaces/{WS}/notebooks/{ITEM}/jobs/execute/instances/{job}?beta=true"]
+    with pytest.raises(PolicyError):
+        gate.notebook_job(job, ITEM, job)
+    assert len(calls) == 1
+    with pytest.raises(PolicyError):
+        gate.notebook_job(WS, ITEM, WS)
+
+
+def test_model_can_read_real_notebook_receipt_output_without_cli(project, store, tmp_path):
+    job = "33333333-3333-3333-3333-333333333333"
+    calls = []
+    def execute(endpoint):
+        calls.append(endpoint)
+        return {"id": job, "itemId": ITEM, "properties": {"exitValue": '{"rows":42}'}}
+    gate = FabricGateway(project, store, tmp_path, executor=execute)
+    req = dict(operation="get_notebook_job", workspace_id=WS, item_id=ITEM, job_id=job)
+    result = gate.read(req)
+    assert result["source"] == "provided_executor"
+    assert result["data"]["properties"]["exitValue"] == '{"rows":42}'
+    assert calls == [f"workspaces/{WS}/notebooks/{ITEM}/jobs/execute/instances/{job}?beta=true"]
+    for bad in (dict(req, workspace_id=ITEM), dict(req, job_id="../escape"), dict(req, operation="get_lakehouse")):
+        with pytest.raises((PolicyError, ValidationError)):
+            gate.read(bad)
+    assert len(calls) == 1
+
+
 def test_sql_auth_failure_identifies_sql_instead_of_workspace_login(monkeypatch, capsys):
     from ray_de import sql_worker
     monkeypatch.setattr(sql_worker.sys, "stdin", io.StringIO(json.dumps(sql_request())))
@@ -20,10 +54,88 @@ def test_sql_auth_failure_identifies_sql_instead_of_workspace_login(monkeypatch,
     assert json.loads(capsys.readouterr().out) == {"error_code": "FABRIC_SQL_SIGNIN_REQUIRED"}
 
 
+def test_missing_sql_table_has_a_safe_specific_error(monkeypatch, capsys):
+    import pyodbc
+    from ray_de import sql_worker
+    monkeypatch.setattr(sql_worker.sys, "stdin", io.StringIO(json.dumps(sql_request())))
+    def fail(*a, **kw): raise pyodbc.ProgrammingError("42S02", "private table detail (208)")
+    monkeypatch.setattr(sql_worker, "execute", fail)
+    assert sql_worker.main() == 1
+    assert json.loads(capsys.readouterr().out) == {"error_code": "FABRIC_SQL_TABLE_UNAVAILABLE"}
+
+
+def test_read_failure_keeps_receipts_and_does_not_retry_automatically(project, store, tmp_path, monkeypatch):
+    from ray_de.errors import RayError
+    from ray_de.cloud import CloudActions
+    task = store.create(project.id, "Verify completed ingestion", "read")
+    calls, reads = [], []
+    receipts = [{"id": "original-plan", "state": "SUCCEEDED", "remote": {"id": "original-job"}}]
+    monkeypatch.setattr(CloudActions, "receipts", lambda *a: receipts)
+    def fail(*a, **kw):
+        reads.append(1)
+        raise RayError("FABRIC_SQL_UNAVAILABLE")
+    monkeypatch.setattr(FabricGateway, "read", fail)
+    class Runner:
+        def run(self, p, prompt, schema, **kwargs):
+            calls.append(prompt)
+            assert "original-job" in prompt
+            if len(calls) > 1:
+                assert 'host_read_error' in prompt and 'FABRIC_SQL_UNAVAILABLE' in prompt
+            if len(calls) <= 2:
+                return dict(output("working"), read_requests=[request()])
+            return dict(output("blocked"), message="Ingestion receipt succeeded; independent SQL verification is unavailable.")
+    result = TaskService(store, Runner(), tmp_path).run(project, task["id"], "Verify", "actor",
+                snapshot={"project_id": project.id, "binding": project.binding})
+    assert len(reads) == 1
+    assert result["status"] == "blocked" and not result["cloud_eligible"]
+    assert result["cloud_plans"] == receipts
+    assert len(result["read_failures"]) == 1
+
+
 def test_cli_accepts_explicit_sql_login():
     from ray_de.cli import parser
     args = parser().parse_args(["--project", "config.yaml", "login", "sql"])
     assert args.service == "sql"
+
+
+def test_sql_browser_login_reuses_isolated_cache_and_never_returns_token(monkeypatch, capsys):
+    from types import SimpleNamespace
+    from ray_de import sql_worker
+    from ray_de.cli import parser
+    from fabric_cli.core import fab_auth, fab_constant
+    import msal
+    args = parser().parse_args(["--project", "config.yaml", "login", "sql", "--browser"])
+    assert args.browser
+    cache = object()
+    auth = SimpleNamespace(get_identity_type=lambda: "user",
+                           _get_app=lambda: SimpleNamespace(token_cache=cache),
+                           _get_authority_url=lambda: "https://login.microsoftonline.com/test-tenant")
+    monkeypatch.setattr(fab_auth, "FabAuth", lambda: auth)
+    calls = []
+    class BrowserApp:
+        def __init__(self, **kwargs):
+            assert kwargs["token_cache"] is cache
+            assert kwargs["client_id"] == fab_constant.AUTH_DEFAULT_CLIENT_ID
+            assert kwargs["authority"] == auth._get_authority_url()
+            assert kwargs["enable_broker_on_windows"] is False
+            assert kwargs["enable_broker_on_mac"] is False
+        def acquire_token_interactive(self, **kwargs):
+            calls.append(kwargs)
+            print("synthetic-private-token")
+            return {"access_token": "synthetic-private-token"}
+    monkeypatch.setattr(msal, "PublicClientApplication", BrowserApp)
+    assert sql_worker.main(login=True, browser=True) == 0
+    assert calls[0]["scopes"] == ["https://database.windows.net/.default"]
+    assert 0 < calls[0]["timeout"] <= 300
+    text = capsys.readouterr().out
+    assert "synthetic-private-token" not in text
+    assert json.loads(text)["sql_signin"] == "ready"
+
+
+def test_sql_browser_auth_requires_explicit_interactive_login():
+    from ray_de.sql_worker import sql_token
+    with pytest.raises(ValueError):
+        sql_token(browser=True)
 
 
 def test_explicit_sql_login_is_interactive_and_does_not_print_token(monkeypatch, capsys):
@@ -44,7 +156,7 @@ def test_explicit_sql_login_is_interactive_and_does_not_print_token(monkeypatch,
 
 def request(operation="lakehouse_count", **kw):
     return dict(operation=operation, workspace_id=WS, item_id=ITEM,
-                schema_name="dbo", table_name="Sales", **kw)
+                schema_name="dbo", table_name="Sales", job_id="", **kw)
 
 
 def test_read_task_gets_live_evidence_without_cloud_actions(project, store, tmp_path, monkeypatch):
@@ -207,3 +319,50 @@ def test_cancelled_read_round_does_not_issue_another_read(project, store, tmp_pa
     with pytest.raises(TaskStopped):
         TaskService(store, Runner(), tmp_path).run(project, task["id"], "Verify", "actor", snapshot=snapshot, cancel=token)
     assert calls == [1]
+    assert store.task(project.id, task["id"])["status"] == "PAUSED"
+
+
+@pytest.mark.parametrize("transport", ["fabric", "sql"])
+def test_worker_timeouts_are_safe_read_failures(project, store, tmp_path, monkeypatch, transport):
+    import subprocess
+    from ray_de.errors import RayError
+    def timeout(*args, **kwargs):
+        raise subprocess.TimeoutExpired("sensitive-command", 60, output="synthetic-private-value")
+    monkeypatch.setattr("ray_de.fabric.subprocess.run", timeout)
+    gateway = FabricGateway(project, store, tmp_path)
+    with pytest.raises(RayError) as caught:
+        gateway._execute("workspaces/" + WS) if transport == "fabric" else gateway._execute_sql(sql_request())
+    assert caught.value.code == "TIMED_OUT"
+    assert "synthetic-private-value" not in str(caught.value)
+
+
+def test_structured_credentials_are_redacted_from_read_results(project, store, tmp_path):
+    secret = "synthetic-private-value"
+    gateway = FabricGateway(project, store, tmp_path, executor=lambda endpoint: {"id": ITEM, "properties": {"access_token": secret}})
+    result = gateway.read(dict(request(), operation="get_item", table_name=""))
+    assert secret not in json.dumps(result)
+
+
+def test_sql_preview_credentials_are_redacted_by_column_name():
+    from ray_de.memory import redact_data
+    result = redact_data({"columns": ["customer_id", "access_token", "refresh_token"],
+                          "rows": [["001", "synthetic-private-value", "second-private-value"]]})
+    assert result["rows"] == [["001", "[REDACTED]", "[REDACTED]"]]
+
+
+def test_wide_sql_preview_keeps_size_error_through_worker_and_gateway(project, store, tmp_path, monkeypatch, capsys):
+    import io
+    from types import SimpleNamespace
+    from ray_de import sql_worker
+    from ray_de.errors import RayError
+    def oversized(request):
+        raise OverflowError("synthetic data must not appear")
+    monkeypatch.setattr(sql_worker, "execute", oversized)
+    monkeypatch.setattr(sql_worker.sys, "stdin", io.StringIO(json.dumps(sql_request())))
+    assert sql_worker.main() == 1
+    envelope = capsys.readouterr().out
+    assert json.loads(envelope) == {"error_code": "FABRIC_READ_TOO_LARGE"}
+    monkeypatch.setattr("ray_de.fabric.subprocess.run", lambda *a, **k: SimpleNamespace(returncode=1, stdout=envelope))
+    with pytest.raises(RayError) as caught:
+        FabricGateway(project, store, tmp_path)._execute_sql(sql_request())
+    assert caught.value.code == "FABRIC_READ_TOO_LARGE"

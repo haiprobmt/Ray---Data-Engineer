@@ -37,11 +37,26 @@ def parser():
     sub = p.add_subparsers(dest="command", required=True)
     sub.add_parser("doctor")
     sub.add_parser("status")
+    tenant = sub.add_parser("tenant", help="Tenant enrollment, local repository and read-only discovery")
+    tenant.add_argument("operation", choices=["capabilities", "secret-set", "read", "import", "allocate"])
+    tenant.add_argument("--kind", default="resources")
+    tenant.add_argument("--workspace", default="")
+    tenant.add_argument("--id")
+    tenant.add_argument("--name")
+    tenant.add_argument("--output", type=Path)
+    tenant.add_argument("--allocation", type=Path)
+    tenant.add_argument("--apply", action="store_true")
+    document = sub.add_parser("read-file", help="Read an MD, Word, PDF or Excel file without running code")
+    document.add_argument("path", type=Path)
+    github = sub.add_parser("github", help="Read public GitHub repository source without executing it")
+    github.add_argument("url")
     sub.add_parser("recover", help="Pause interrupted tasks without rerunning them")
     login = sub.add_parser(
         "login", help="Authenticate this project's isolated local profile"
     )
     login.add_argument("service", choices=["codex", "fabric", "sql"])
+    login.add_argument("--browser", action="store_true", help="Use browser SQL sign-in when the Windows broker fails")
+    login.add_argument("--service-principal-env", type=Path, help="Import a local SP dotenv file into project-bound Windows protected storage")
     start = sub.add_parser("run")
     start.add_argument("message")
     start.add_argument("--mode", choices=["read", "write"], default="read")
@@ -53,7 +68,7 @@ def parser():
     fab = sub.add_parser("fabric")
     fab.add_argument(
         "operation",
-        choices=["workspaces", "snapshot", "items", "item", "lakehouse-tables"],
+        choices=["workspaces", "snapshot", "items", "item", "lakehouse-tables", "sql-database", "environment"],
     )
     fab.add_argument("--workspace")
     fab.add_argument("--item")
@@ -97,7 +112,7 @@ def parser():
     actions.add_argument("--id")
     actions.add_argument("--task")
     actions.add_argument(
-        "--action", choices=["create_item", "update_item", "update_definition", "run_job", "deploy_to_test"]
+        "--action", choices=["create_item", "update_item", "update_definition", "run_job", "deploy_to_test", "publish_environment", "tenant_action"]
     )
     actions.add_argument("--workspace")
     actions.add_argument("--item")
@@ -114,7 +129,7 @@ def doctor(project, data_dir):
         "repo": str(project.repo),
         "cloud_writes": project.config.policy.model_dump(),
         "local_write": project.config.policy.local_write,
-        "allow_listed_workspaces": len(project.config.fabric.workspaces),
+        "allow_listed_workspaces": len(project.workspaces),
         "telegram": "available; opt-in configuration and token required",
         "checks": {},
     }
@@ -149,9 +164,14 @@ def doctor(project, data_dir):
     report["ready_for_local_turn"] = bool(
         report["checks"].get("codex", {}).get("authenticated")
     )
+    try:
+        report["checks"]["command_execution"] = CodexRunner(data_dir).probe(project)
+    except (OSError, ValueError, RuntimeError, ImportError, TimeoutError):
+        report["checks"]["command_execution"] = {"shell_available": False, "error_code": "SANDBOX_FAILED"}
+    report["ready_for_command_execution"] = report["checks"]["command_execution"].get("shell_available", False)
     report["ready_for_fabric"] = bool(
         report["checks"].get("fab", {}).get("authenticated")
-        and project.config.fabric.workspaces
+        and project.workspaces
     )
     return report
 
@@ -170,6 +190,20 @@ def main(argv=None):
         store.bind(project)
         control = Control(store)
         actor = "local:" + getpass.getuser()
+        if args.command in {"read-file", "github"}:
+            from .reading import ReadingStore
+            if args.command == "read-file":
+                from .documents import check_file, read_document
+                path = args.path.resolve(strict=True)
+                check_file(path.name, path.stat().st_size)
+                with path.open("rb") as stream:
+                    from .documents import MAX_BYTES
+                    evidence = read_document(path.name, stream.read(MAX_BYTES + 1))
+            else:
+                from .github_reading import GitHubReader
+                evidence = GitHubReader().read(args.url)
+            emit(ReadingStore(store).save(actor, project, evidence))
+            return 0
         if args.command in {"stop", "unpause"}:
             (control.stop if args.command == "stop" else control.resume)(project.id)
             emit(
@@ -240,6 +274,47 @@ def main(argv=None):
                 from .monitor import check_once
 
                 emit(check_once(project, store, data_dir))
+            elif args.command == "tenant":
+                from .tenant import settings, github_settings
+                from .fabric import TenantGateway
+                tenant = settings(project)
+                if args.operation == "capabilities":
+                    emit({"tenant_id": tenant.tenant_id, "client_id": tenant.client_id,
+                          "grants": [g.model_dump() for g in tenant.grants], "resources": store.tenant_resources(project)})
+                elif args.operation == "secret-set":
+                    if not args.name:
+                        raise ValueError("--name is required for a local credential reference")
+                    from .tenant_credentials import save
+                    profile = Path(fabric_env(data_dir, project.id)["USERPROFILE"]) / ".config" / "fab"
+                    value = getpass.getpass("Credential value (hidden, local only): ")
+                    save(profile, tenant.tenant_id, tenant.client_id, args.name, value)
+                    value = None
+                    emit({"credential_ref": args.name, "storage": "Windows DPAPI; tenant/client/profile bound"})
+                elif args.operation == "allocate":
+                    from .tenant_repository import allocate
+                    github = github_settings(project)
+                    binding = next((w for w in github.workspaces if w.workspace == args.workspace), None)
+                    if not binding or not args.allocation:
+                        raise ValueError("An enrolled --workspace and --allocation JSON file are required")
+                    if args.apply and not project.config.policy.local_write:
+                        raise ValueError("Local writes are disabled")
+                    emit(allocate(project.repo, binding.directory, json.loads(args.allocation.read_text(encoding="utf-8")), apply=args.apply))
+                elif args.operation == "import":
+                    if not project.config.policy.local_write or not args.id:
+                        raise ValueError("Local writes and an exact --id Git commit are required for import")
+                    from .tenant_repository import import_workspace
+                    emit(import_workspace(project, TenantGateway(project, store, data_dir, actor=actor), args.workspace, args.id))
+                else:
+                    value = TenantGateway(project, store, data_dir, actor=actor).read(args.kind, args.workspace, {"id": args.id} if args.id else {})
+                    if args.output:
+                        output = (project.repo / args.output).resolve()
+                        if output.exists() or not output.is_relative_to(project.repo) or not project.config.policy.local_write:
+                            raise ValueError("Read output requires a new file within the writable project repository")
+                        output.parent.mkdir(parents=True, exist_ok=True)
+                        output.write_text(json.dumps(value["data"], indent=2), encoding="utf-8")
+                        emit({"output": str(output), "source": value["source"]})
+                    else:
+                        emit(value)
             elif args.command == "actions":
                 cloud = CloudActions(project, store, data_dir)
                 if args.operation == "list":
@@ -258,7 +333,7 @@ def main(argv=None):
                         [
                             args.task,
                             args.action,
-                            args.workspace,
+                            args.workspace or args.action == "tenant_action",
                             args.item or args.action == "create_item",
                             args.definition,
                         ]
@@ -269,7 +344,7 @@ def main(argv=None):
                     plan = cloud.prepare(
                         args.task,
                         args.action,
-                        args.workspace,
+                        args.workspace or "",
                         args.item or "",
                         args.definition,
                         actor,
@@ -315,13 +390,22 @@ def main(argv=None):
                         }
                     )
             elif args.command == "login":
+                if args.service_principal_env and (args.service != "fabric" or args.browser):
+                    raise ValueError("--service-principal-env requires login fabric without --browser")
+                if args.browser and args.service != "sql":
+                    raise ValueError("--browser is supported only for SQL login")
                 env = clean_env()
-                if args.service == "codex":
+                if args.service_principal_env:
+                    env = fabric_env(data_dir, project.id)
+                    command = [sys.executable, "-m", "ray_de.fabric_auth", str(args.service_principal_env.resolve(strict=True))]
+                elif args.service == "codex":
                     env["CODEX_HOME"] = str(CodexRunner(data_dir).home(project))
                     command = [resolve_binary("codex"), "login", "--device-auth"]
                 elif args.service == "sql":
                     env = fabric_env(data_dir, project.id)
                     command = [sys.executable, "-m", "ray_de.sql_worker", "--login"]
+                    if args.browser:
+                        command.append("--browser")
                 else:
                     env = fabric_env(data_dir, project.id)
                     command = [resolve_binary("fab"), "auth", "login"]
@@ -339,6 +423,8 @@ def main(argv=None):
                         "items": "list_items",
                         "item": "get_item",
                         "lakehouse-tables": "list_lakehouse_tables",
+                        "sql-database": "get_sql_database",
+                        "environment": "get_environment",
                     }[args.operation]
                     result = gateway.call(operation, args.workspace, args.item)
                 if args.output:

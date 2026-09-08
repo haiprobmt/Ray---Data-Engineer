@@ -97,6 +97,34 @@ def test_lost_write_response_reconciles_without_resubmit(setup):
     assert len(f.mutations) == 1
 
 
+def test_lost_auth_while_polling_keeps_job_uncertain_and_reconciles(setup, monkeypatch):
+    from types import SimpleNamespace
+    from ray_de.cloud import FabricTransport
+    from ray_de.errors import RayError
+    p, s, t, f, c = setup
+    f.definitions[DEV] = json.loads((p.repo / "definition.json").read_text())
+    plan = prepare(setup, "run_job")
+    original = f.request
+    real = FabricTransport(p, s, c.data_dir, ACTOR, t["id"])
+    def request(method, endpoint, payload=None):
+        if method == "get" and "/jobs/instances/" in endpoint:
+            return real.request(method, endpoint)
+        return original(method, endpoint, payload)
+    with monkeypatch.context() as patch:
+        patch.setattr(f, "request", request)
+        patch.setattr("ray_de.cloud.subprocess.run", lambda *a, **kw: SimpleNamespace(
+            returncode=1, stdout='{"error_code":"FABRIC_SIGNIN_REQUIRED"}'))
+        with pytest.raises(RayError) as error:
+            c.execute(plan["id"], ACTOR)
+        assert error.value.code == "FABRIC_SIGNIN_REQUIRED"
+    assert c.get(plan["id"])["state"] == "UNCERTAIN"
+    assert json.loads(c.get(plan["id"])["remote"])["kind"] == "job"
+    with pytest.raises(PolicyError):
+        c.execute(plan["id"], ACTOR)
+    assert c.reconcile(plan["id"], ACTOR)["state"] == "SUCCEEDED"
+    assert len(f.mutations) == 1
+
+
 def test_stale_reconciliation_rejected(setup):
     p, s, t, f, c = setup
     plan = prepare(setup)
@@ -110,8 +138,13 @@ def test_stale_reconciliation_rejected(setup):
 
 
 def test_job_requires_matching_reviewed_definition(setup):
-    with pytest.raises(PolicyError, match="differs"):
+    from ray_de.errors import RayError, describe_error
+    with pytest.raises(RayError) as caught:
         prepare(setup, "run_job")
+    error = describe_error(caught.value, "cloud_action")
+    assert error["code"] == "FABRIC_DEFINITION_CHANGED"
+    assert "review" in error["next_step"]
+    assert setup[3].mutations == []
 
 
 def test_job_failure_never_claims_success_or_retries(setup):
@@ -122,6 +155,26 @@ def test_job_failure_never_claims_success_or_retries(setup):
     with pytest.raises(RuntimeError):
         c.execute(plan["id"], ACTOR)
     assert c.get(plan["id"])["state"] == "FAILED" and len(f.mutations) == 1
+
+
+def test_reconcile_terminal_failed_job_updates_uncertain_receipt(setup, monkeypatch):
+    p, s, t, f, c = setup
+    f.definitions[DEV] = json.loads((p.repo / "definition.json").read_text())
+    action = prepare(setup, "run_job")
+    original = f.request
+    def request(method, endpoint, payload=None):
+        if method == "get" and "/jobs/instances/" in endpoint:
+            raise TimeoutError("polling interrupted")
+        return original(method, endpoint, payload)
+    with monkeypatch.context() as patch:
+        patch.setattr(f, "request", request)
+        with pytest.raises(TimeoutError):
+            c.execute(action["id"], ACTOR)
+    f.job_status = "Failed"
+    with pytest.raises(RuntimeError):
+        c.reconcile(action["id"], ACTOR)
+    assert c.get(action["id"])["state"] == "FAILED"
+    assert len(f.mutations) == 1
 
 
 def test_post_validation_failure_is_recorded(setup, monkeypatch):
@@ -178,6 +231,9 @@ def test_recovery_never_replays_executing_plan(setup):
         db.execute("UPDATE plans SET state='EXECUTING' WHERE id=?", (plan["id"],))
     Control(s).recover(p.id)
     assert c.get(plan["id"])["state"] == "UNCERTAIN" and not f.mutations
+    report = json.loads(s.task(p.id, t["id"])["result"])
+    assert report["status"] == "blocked"
+    assert report["cloud_plans"][0]["state"] == "UNCERTAIN"
 
 
 def test_offline_end_to_end(tmp_path):
@@ -212,6 +268,18 @@ def test_new_review_does_not_revalidate_old_plan(setup):
     assert not f.mutations
 
 
+def test_new_review_supersedes_old_approval_even_with_unchanged_source(setup):
+    from ray_de.demo import SyntheticRunner
+    from ray_de.orchestrator import Orchestrator
+    p, s, t, f, c = setup
+    action = prepare(setup, "deploy_to_test", TEST)
+    Orchestrator(s, SyntheticRunner()).run(p, t["id"], "Reassess the task with new requirements")
+    with pytest.raises(PolicyError):
+        c.approve(action["id"], ACTOR, action["digest"])
+    assert c.get(action["id"])["state"] == "SUPERSEDED"
+    assert not f.mutations
+
+
 def test_shared_service_updates_then_runs_job(setup, monkeypatch):
     from ray_de.demo import SyntheticRunner
     from ray_de.service import TaskService
@@ -242,6 +310,130 @@ def test_shared_service_updates_then_runs_job(setup, monkeypatch):
         snapshot={"project_id": p.id, "binding": p.binding, "workspaces": []},
     )
     assert result["status"] == "completed" and len(f.mutations) == 2
+
+
+def test_task_never_reports_done_while_fabric_work_is_pending(setup, monkeypatch):
+    from ray_de.demo import SyntheticRunner
+    from ray_de.service import TaskService
+    p, s, t, f, c = setup
+    class Runner(SyntheticRunner):
+        def run(self, *args, **kwargs):
+            result = super().run(*args, **kwargs)
+            if "status" in result:
+                result["cloud_actions"] = [dict(operation=op, workspace_id=DEV, item_id=ITEM,
+                    definition_path="definition.json") for op in ("update_definition", "run_job")]
+            return result
+    original = c.authorize_proposal
+    def authorize(proposal):
+        assert s.task(p.id, t["id"])["status"] == "WAITING"
+        return original(proposal)
+    monkeypatch.setattr(c, "authorize_proposal", authorize)
+    request = f.request
+    def inspect(method, endpoint, payload=None):
+        if endpoint.endswith(("updateDefinition", "RunNotebook/instances")):
+            saved = json.loads(s.task(p.id, t["id"])["result"])
+            assert saved["status"] == "waiting"
+            assert saved["phase"] in {"applying_changes", "running_job"}
+            assert any(plan["state"] == "EXECUTING" for plan in saved["cloud_plans"])
+        return request(method, endpoint, payload)
+    monkeypatch.setattr(f, "request", inspect)
+    monkeypatch.setattr("ray_de.service.CloudActions", lambda *a, **k: c)
+    result = TaskService(s, Runner(), s.path.parent).run(p, t["id"], "Update and run", ACTOR,
+        snapshot={"project_id": p.id, "binding": p.binding})
+    assert result["status"] == "completed" and len(f.mutations) == 2
+
+
+def test_test_dependencies_wait_for_preceding_exact_approval(setup, monkeypatch):
+    from ray_de.demo import SyntheticRunner
+    from ray_de.service import TaskService
+    p, s, t, f, c = setup
+    class Runner(SyntheticRunner):
+        author_turns = 0
+        def run(self, *args, **kwargs):
+            result = super().run(*args, **kwargs)
+            if "status" in result:
+                operations = ("deploy_to_test", "run_job") if self.author_turns == 0 else ("run_job",)
+                self.author_turns += 1
+                result["cloud_actions"] = [dict(operation=op, workspace_id=TEST, item_id=ITEM,
+                                                definition_path="definition.json")
+                                           for op in operations]
+            return result
+    cfg = p.config.model_dump()
+    cfg["fabric"]["workspace_write"] = True
+    p.config = ProjectConfig.model_validate(cfg)
+    monkeypatch.setattr("ray_de.service.CloudActions", lambda *a, **k: c)
+    service = TaskService(s, Runner(), s.path.parent)
+    snapshot = {"project_id": p.id, "binding": p.binding}
+    result = service.run(p, t["id"], "Update TEST then run", ACTOR, snapshot=snapshot)
+    assert result["status"] == "approval_required"
+    assert len(result["cloud_plans"]) == 1 and not f.mutations
+    assert result["continue_work"] is True
+    action = c.get(result["cloud_plans"][0]["id"])
+    c.approve(action["id"], ACTOR, action["digest"])
+    c.execute(action["id"], ACTOR)
+    assert s.task(p.id, t["id"])["status"] == "WAITING"
+    result = service.run(p, t["id"], "Continue from approved update receipt", ACTOR, snapshot=snapshot)
+    assert result["status"] == "approval_required" and len(f.mutations) == 1
+    job = c.get(result["stage_plan_ids"][0])
+    with pytest.raises(PolicyError):
+        c.execute(job["id"], ACTOR)
+    c.approve(job["id"], ACTOR, job["digest"])
+    c.execute(job["id"], ACTOR)
+    assert s.task(p.id, t["id"])["status"] == "COMPLETED"
+    assert len(f.mutations) == 2
+
+
+def test_new_review_can_complete_after_a_known_failed_previous_attempt(setup, monkeypatch):
+    from ray_de.demo import SyntheticRunner
+    from ray_de.service import TaskService
+    p, s, t, f, c = setup
+    f.definitions[DEV] = json.loads((p.repo / "definition.json").read_text())
+    action = prepare(setup, "run_job")
+    f.job_status = "Failed"
+    with pytest.raises(RuntimeError):
+        c.execute(action["id"], ACTOR)
+    f.job_status = "Completed"
+    class Runner(SyntheticRunner):
+        author_turns = 0
+        def run(self, *args, **kwargs):
+            result = super().run(*args, **kwargs)
+            if "status" in result:
+                if self.author_turns == 0:
+                    result["cloud_actions"] = [dict(operation="run_job", workspace_id=DEV, item_id=ITEM,
+                                                    definition_path="definition.json")]
+                    result["continue_work"] = True
+                self.author_turns += 1
+            return result
+    monkeypatch.setattr("ray_de.service.CloudActions", lambda *a, **k: c)
+    result = TaskService(s, Runner(), s.path.parent).run(p, t["id"], "The cause is fixed; run again", ACTOR,
+                snapshot={"project_id": p.id, "binding": p.binding})
+    assert result["status"] == "completed"
+    assert [receipt["state"] for receipt in result["cloud_plans"]] == ["FAILED", "SUCCEEDED"]
+    assert len(f.mutations) == 2
+
+
+def test_new_model_completion_cannot_hide_unresolved_remote_action(setup, monkeypatch):
+    from ray_de.demo import SyntheticRunner
+    from ray_de.service import TaskService
+    p, s, t, f, c = setup
+    action = prepare(setup)
+    f.lose_response = True
+    with pytest.raises(TimeoutError):
+        c.execute(action["id"], ACTOR)
+    monkeypatch.setattr("ray_de.service.CloudActions", lambda *a, **k: c)
+    result = TaskService(s, SyntheticRunner(), s.path.parent).run(p, t["id"], "Inspect status", ACTOR,
+        snapshot={"project_id": p.id, "binding": p.binding})
+    assert result["status"] == "blocked"
+    assert result["cloud_plans"][0]["state"] == "UNCERTAIN"
+    assert len(f.mutations) == 1
+
+
+@pytest.mark.parametrize("path", ["./.platform", "folder/../.platform", "folder//file.py", "./notebook-content.py"])
+def test_definition_part_paths_must_be_canonical(path):
+    data = definition("safe")
+    data["definition"]["parts"][0]["path"] = path
+    with pytest.raises(ValueError):
+        definition_parts(data)
 
 
 def test_transport_audits_mutation_and_sanitizes_errors(setup, monkeypatch):

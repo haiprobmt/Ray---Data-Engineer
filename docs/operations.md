@@ -15,7 +15,26 @@ error category; `plans` records exact payload/source/rollback bindings and outco
 No raw model/process logs are sent to chat. Secret redaction is pattern-based, so
 avoid including confidential data in requests and decision text.
 
+Telegram `/status` and `/details` now give short, plain-English updates. Use
+`/details technical` for the review, command results, error codes and Fabric IDs.
+The source stage remains in progress while Fabric changes or jobs are pending;
+current action receipts override a stale saved completion message. SourceFile
+definitions can be validated directly in memory without temporary-folder rewrites.
+
+The `reading_material` table holds bounded, redacted file/repository text by actor,
+project and binding. It is included in the state database backup. `/forget` clears
+the actor's recent chat/reference cache; it does not delete saved task evidence.
+See [document and GitHub reading](document-and-github-reading.md).
+
 ## Interruption and recovery
+
+Engineering model turns use `timeout_seconds` as the inactivity limit while
+bounded SDK activity is observed, with a hard limit of three times that value
+(at most two hours). Chat and runtime probes keep their original total limit.
+At the default 600 seconds, an active engineering turn has up to 30 minutes;
+an unresponsive one still stops after 10 minutes. `/status` shows the current
+activity; `/details technical` distinguishes inactivity from the overall limit.
+See the [Gold timeout repair](model-timeout-repair-20260906.md).
 
 1. Issue `stop` to halt new work. Already submitted jobs continue in Fabric.
 2. After the old process exits, run `recover` under the project lock. Local execution
@@ -98,9 +117,86 @@ authorization in the same project profile; background queries never open interac
 sign-in. SQL login confirms token acquisition only, not database permissions or
 connectivity. `/workspace check` tests metadata and cannot establish SQL readiness.
 Resume the failed task after sign-in so its actual SQL read can verify access.
+If the Windows broker fails, run `ray ... login sql --browser` explicitly. This
+uses MSAL browser sign-in with the same tenant, client and encrypted project cache,
+with a five-minute timeout. Background SQL queries never launch either sign-in flow.
 
 Authenticate isolated profiles, provide real IDs, check sensitivity/export permissions,
 validate actual business-data reconciliation and Notebook/Pipeline round trips, verify
 Windows sandbox containment, and test logon/reboot on the intended machine. Then run
 the evaluation scenarios and record actual model quality and human interventions.
 No local synthetic test result is a live acceptance result.
+
+Telegram task replies show a readable outcome and summary. `/details technical` displays
+the current task's full identifiers, evidence, validations and action receipts;
+`/status` remains available for operational status. Ordinary conversation and
+task replies support bold labels, inline code and fenced code blocks using
+Telegram text entities. Long replies split without breaking Unicode offsets.
+Blocked outcomes, failures and pending approvals stay visible in the summary.
+`/details technical` includes the independent review verdict and findings before background
+evidence, so a review block has actionable reasons. SourceFile notebook compilation
+normalizes cell source strings to Fabric-compatible line arrays before validation
+and review; compiled payloads and local notebook source remain byte-consistent.
+Fabric can add notebook metadata after creation. A later run still requires an
+exact match to the reviewed definition. `FABRIC_DEFINITION_CHANGED` means to
+inspect the export and obtain fresh review of reconciled source, not to enable
+more permissions or repeat creation.
+
+For unattended service-principal authentication on Windows, put
+`FAB_TENANT_ID`, `FAB_SPN_CLIENT_ID`, and `FAB_SPN_CLIENT_SECRET` in a local,
+Git-ignored `.env`. Run `ray --project <config.yaml> --data-dir <state> login
+fabric --service-principal-env <absolute-path-to-.env>` locally. This verifies
+both Fabric and SQL token acquisition with a new in-memory cache, then stores
+the credential using Windows user-bound DPAPI, bound to this project's profile,
+tenant and application. Fabric and SQL workers reload it for token renewal.
+The model environment does not receive these variables. The `.env` stays on
+disk; it is not needed by workers after enrollment. After secret rotation,
+update it and rerun enrollment. Workspace and SQL permissions still require
+live checks. Browser SQL login applies only to human user profiles.
+
+`doctor` now reports `ready_for_command_execution` separately from model/Fabric
+authentication. It runs one fixed read-only shell command through the same pinned
+SDK configuration, without a model turn. A successful probe establishes that command
+execution works; it does not establish sandbox containment or Fabric write access.
+Fresh Windows profiles select `unelevated` explicitly, because an unset native
+sandbox rejects commands with escalation denied. An explicit `elevated` selection
+in that profile's `config.toml` is preserved. Enterprise restrictions still apply;
+Ray never falls back to full access. Store PowerShell PATH entries are excluded only
+from Ray's subprocess environment; standalone PowerShell/Codex paths remain available.
+Local shell profiles are disabled, and Python resolves to Ray's installed environment.
+
+Review source prioritizes current changes, pending changes from a resumed task and
+proposed definitions over older repository files. Required review source is never
+silently omitted when its budget is exhausted. Host structural validation remains
+distinct from executing authored tests; Ray and its reviewer can now run those tests
+in the native sandbox. The model can request `get_item`, `list_items` and
+`get_notebook_job` through the workspace-bound read gateway, including Notebook
+exit values for actual job IDs. These reads keep credentials in the host workers.
+
+During model-requested reads, classified service failures are returned as
+`source=host_read_error` with fixed public error text. Successful action receipts
+remain available independently of those observations. Identical failed reads are
+not retried within that stage; Ray must use other evidence or report the limitation.
+`FABRIC_SQL_TABLE_UNAVAILABLE` means SQL returned missing-table SQLSTATE `42S02`;
+check schema/table metadata and allow for newly written Delta tables to synchronize.
+It is not proof that the preceding pipeline failed or that sign-in must be renewed.
+
+Source manifests are checkpointed in SQLite before an author turn. Exceptions and
+restart recovery retain unfinished changes for the next independent review;
+validation-generated files join that scope. A completed source stage no longer
+consumes the next stage's required-source budget. The added checkpoint table is
+created automatically when Ray opens its state database.
+
+A new source turn supersedes unused action plans and approval decisions from the
+previous turn. Successful and failed historical receipts stay visible. Current
+stage plans determine progress, while unresolved remote actions still prevent a
+completion claim. Reconciliation records a subsequently observed terminal job
+failure without repeating the job.
+
+Dependent TEST actions are prepared one stage at a time. Telegram continues after
+an approved action succeeds, obtains fresh source review, and presents the next
+exact approval when needed. With the CLI, resume the task after executing an
+approved action whose task state remains WAITING. Cancellation during reads now
+persists PAUSED, and worker timeouts/oversized previews retain their specific
+error categories. See [the broader reliability audit](reliability-audit-20260906.md)
+for regression cases and verification limits.

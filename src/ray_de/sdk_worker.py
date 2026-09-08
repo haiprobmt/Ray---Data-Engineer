@@ -27,6 +27,63 @@ def atomic_json(path, value):
     temporary.replace(path)
 
 
+def consume_turn(turn, progress_path):
+    """Consume the public SDK stream while preserving final-response semantics."""
+    from .model_progress import ProgressWriter
+    from openai_codex.generated.v2_all import ItemCompletedNotification, TurnCompletedNotification, AgentMessageThreadItem
+    progress = ProgressWriter(progress_path)
+    final = fallback = None
+    stream = turn.stream()
+    try:
+        for event in stream:
+            payload = event.payload
+            progress.observe(event)
+            if isinstance(payload, ItemCompletedNotification) and payload.turn_id == turn.id:
+                item = getattr(payload.item, "root", payload.item)
+                if isinstance(item, AgentMessageThreadItem):
+                    phase = getattr(item.phase, "value", item.phase)
+                    if phase == "final_answer":
+                        final = item.text
+                    elif phase is None:
+                        fallback = item.text
+            if isinstance(payload, TurnCompletedNotification) and payload.turn.id == turn.id:
+                status = getattr(payload.turn.status, "value", payload.turn.status)
+                if status != "completed":
+                    raise RayError(model_error_code(payload.turn.error))
+                text = final if final is not None else fallback
+                if not text:
+                    raise RayError("MODEL_OUTPUT_INVALID")
+                return json.loads(text)
+        raise RayError("MODEL_UNAVAILABLE")
+    finally:
+        stream.close()
+
+
+def probe_shell(config):
+    """Exercise the configured SDK command path; return categories, never raw logs."""
+    import shutil
+    from openai_codex.client import CodexClient
+    from openai_codex.generated.v2_all import CommandExecResponse
+
+    shell = (shutil.which("pwsh") or shutil.which("powershell")) if os.name == "nt" else shutil.which("sh")
+    if not shell:
+        return {"shell_available": False, "error_code": "LOCAL_RESOURCE"}
+    command = [shell, "-NoProfile", "-NonInteractive", "-Command", "Write-Output ray-runtime-ok"] if os.name == "nt" else [shell, "-c", "printf ray-runtime-ok"]
+    try:
+        with CodexClient(config) as client:
+            client.initialize()
+            result = client.request("command/exec", {
+                "command": command, "cwd": config.cwd,
+                "sandboxPolicy": {"type": "readOnly"},
+                "timeoutMs": 10000,
+            }, response_model=CommandExecResponse)
+        ready = result.exit_code == 0 and result.stdout.strip() == "ray-runtime-ok"
+        return {"shell_available": ready, "shell": shell, "error_code": None if ready else "SANDBOX_FAILED",
+                "scope": "one read-only shell command; no model, Fabric write or containment acceptance"}
+    except Exception:
+        return {"shell_available": False, "shell": shell, "error_code": "SANDBOX_FAILED"}
+
+
 def run(request_path, result_path, checkpoint):
     from openai_codex import Codex, CodexConfig, Sandbox, ApprovalMode
 
@@ -46,7 +103,27 @@ def run(request_path, result_path, checkpoint):
         'web_search="disabled"',
         "features.apps=false",
         "features.multi_agent=false",
+        "allow_login_shell=false",
     )
+    if os.name == "nt":
+        # A fresh isolated CODEX_HOME has no Windows sandbox selection. With
+        # approval=never that rejects even Get-ChildItem before process creation.
+        # Select the native restricted-token sandbox without admin setup or
+        # permission escalation. Enterprise requirements still take precedence.
+        mode = "unelevated"
+        if request.get("home"):
+            config_path = Path(request["home"]) / "config.toml"
+            if config_path.is_file():
+                import tomllib
+                with config_path.open("rb") as stream:
+                    mode = tomllib.load(stream).get("windows", {}).get("sandbox", mode)
+        if mode not in {"elevated", "unelevated"}:
+            raise ValueError("Unsupported Windows sandbox implementation")
+        overrides += ("windows.sandbox=" + json.dumps(mode),)
+        for key in ("SYSTEMROOT", "WINDIR", "COMSPEC", "PATHEXT", "TEMP", "TMP"):
+            value = next((v for k, v in os.environ.items() if k.upper() == key), None)
+            if value is not None:
+                overrides += ("shell_environment_policy.set." + key + "=" + json.dumps(value),)
     if conversation:
         overrides += (
             "features.shell_tool=false", "tools.view_image=false",
@@ -58,6 +135,11 @@ def run(request_path, result_path, checkpoint):
         config_overrides=overrides,
         client_name="ray_fabric_engineer",
     )
+    if request.get("diagnostic"):
+        if conversation or not request["read_only"] or request["thread_id"]:
+            raise ValueError("Runtime probe requires a fresh read-only request")
+        atomic_json(result_path, probe_shell(config))
+        return
     instructions = (
         Path(__file__)
         .with_name("prompts")
@@ -89,11 +171,8 @@ def run(request_path, result_path, checkpoint):
         # A thread/start ID has no resumable rollout until turn/start succeeds.
         # Checkpoint the accepted turn before consuming its model output.
         atomic_json(checkpoint, {"thread_id": thread.id})
-        response = turn.run()
-        status = getattr(response.status, "value", response.status)
-        if status != "completed" or not response.final_response:
-            raise RayError(model_error_code(getattr(response, "error", None)))
-        atomic_json(result_path, json.loads(response.final_response))
+        response = consume_turn(turn, checkpoint.with_name("progress.json"))
+        atomic_json(result_path, response)
 
 
 if __name__ == "__main__":

@@ -7,7 +7,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from .runtime import clean_env, resolve_binary
+from .runtime import codex_env, resolve_binary
 from .errors import RayError
 
 
@@ -26,6 +26,10 @@ class CodexRunner:
         home.mkdir(parents=True, exist_ok=True)
         return home
 
+    def probe(self, project):
+        """Check a real sandboxed shell without a model turn or cloud access."""
+        return self.run(project, "", {}, diagnostic=True)
+
     def run(
         self,
         project,
@@ -37,6 +41,8 @@ class CodexRunner:
         on_thread=None,
         cancel=None,
         conversation=False,
+        diagnostic=False,
+        on_progress=None,
     ):
         if cancel:
             cancel.check()
@@ -48,7 +54,7 @@ class CodexRunner:
                 raise ValueError("Conversation must use a fresh read-only thread")
             repo = self.data_dir / "conversation-empty"
             repo.mkdir(parents=True, exist_ok=True)
-        env = clean_env()
+        env = codex_env()
         env["CODEX_HOME"] = str(home)
         # Worker imports the installed package or this source checkout.
         env["PYTHONPATH"] = str(Path(__file__).resolve().parents[1])
@@ -62,6 +68,7 @@ class CodexRunner:
             "prompt": prompt,
             "schema": schema,
             "conversation": conversation,
+            "diagnostic": diagnostic,
         }
         # Separate result and immediate checkpoint files avoid mixing model output
         # with SDK logs and preserve the thread ID even when a turn fails.
@@ -91,7 +98,11 @@ class CodexRunner:
             )
             import time
 
-            deadline = time.monotonic() + project.config.timeout_seconds
+            from .model_progress import TurnDeadline
+            watch = TurnDeadline(30 if diagnostic else project.config.timeout_seconds,
+                                 engineering=not conversation and not diagnostic, now=time.monotonic())
+            progress_path = scratch / "progress.json"
+            last_notice = float("-inf")
             saved = None
             try:
                 while process.poll() is None:
@@ -103,10 +114,18 @@ class CodexRunner:
                         ]
                         if on_thread:
                             on_thread(saved)
-                    if time.monotonic() >= deadline:
-                        raise TimeoutError(
-                            "Codex turn timed out; task paused, no automatic retry"
-                        )
+                    now = time.monotonic()
+                    try:
+                        with progress_path.open(encoding="utf-8") as stream:
+                            encoded = stream.read(513)
+                        activity = json.loads(encoded) if len(encoded) <= 512 else None
+                    except (OSError, ValueError):
+                        activity = None
+                    watch.observe(activity, now)
+                    if on_progress and now - last_notice >= 20:
+                        on_progress(watch.snapshot(now))
+                        last_notice = now
+                    watch.check(now)
                     time.sleep(0.1)
                 if checkpoint.exists() and saved is None and on_thread:
                     on_thread(

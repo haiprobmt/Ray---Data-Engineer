@@ -58,6 +58,14 @@ def test_restart_resumes_same_thread_and_task(project, store):
     assert len(reopened.list_tasks(project.id)) == 1
 
 
+@pytest.mark.parametrize("phase", ["reading_fabric", "source_ready", "preparing_fabric", "applying_changes", "running_job", "preparing_next_step"])
+def test_recovery_pauses_interrupted_host_work_without_rerunning(project, store, phase):
+    task = store.create(project.id, "Run a reviewed stage", "write")
+    store.update(project.id, task["id"], "WAITING", result={"status": "waiting", "phase": phase})
+    assert store.recover(project.id) == 1
+    assert store.task(project.id, task["id"])["status"] == "PAUSED"
+
+
 def test_thread_checkpoint_survives_failed_turn(project, store):
     task = store.create(project.id, "Inspect", "read")
     with pytest.raises(RuntimeError):
@@ -66,6 +74,27 @@ def test_thread_checkpoint_survives_failed_turn(project, store):
         )
     loaded = StateStore(store.path).task(project.id, task["id"])
     assert loaded["thread_id"] == "primary-id" and loaded["status"] == "ERROR"
+
+
+def test_model_secrets_are_removed_before_task_storage_and_return(project, store):
+    secret = "synthetic-private-value"
+    class Runner:
+        def run(self, project, prompt, schema, **kwargs):
+            return dict(output(), message=json.dumps({"access_token": secret}))
+    task = store.create(project.id, "Inspect", "read")
+    report = Orchestrator(store, Runner()).run(project, task["id"], "Inspect")
+    assert secret not in json.dumps(report)
+    assert secret not in store.task(project.id, task["id"])["result"]
+
+
+def test_recovery_does_not_leave_completed_claim_in_paused_result(project, store):
+    task = store.create(project.id, "Resume earlier work", "write")
+    store.update(project.id, task["id"], "WORKING", result=dict(output(), cloud_eligible=True))
+    store.recover(project.id)
+    saved = store.task(project.id, task["id"])
+    report = json.loads(saved["result"])
+    assert saved["status"] == "PAUSED"
+    assert report["status"] == "paused" and report["cloud_eligible"] is False
 
 
 def test_recovery_pauses_execution_preserves_clarification(project, store):
@@ -196,3 +225,47 @@ def test_completion_requires_evidence():
 def test_clarification_requires_question_and_recommendation():
     with pytest.raises(ValueError):
         TurnResult.model_validate(output("clarification"))
+
+
+def test_blocked_recovery_question_preserves_blocked_state(project, store):
+    class BlockedRunner:
+        def run(self, project, prompt, schema, **kwargs):
+            return dict(output("blocked"), question="Can you provide the missing input?",
+                        recommendation="Stage the approved CSV inside the project repository.")
+
+    task = store.create(project.id, "Inspect missing input", "write")
+    report = Orchestrator(store, BlockedRunner()).run(project, task["id"], "Inspect")
+    assert report["status"] == "blocked"
+    assert report["question"] == "Can you provide the missing input?"
+    assert report["cloud_eligible"] is False
+    assert store.task(project.id, task["id"])["status"] == "BLOCKED"
+
+
+@pytest.mark.parametrize("status", ["completed", "working", "approval_required", "error"])
+def test_recovery_question_not_allowed_in_other_states(status):
+    with pytest.raises(ValueError):
+        TurnResult.model_validate(dict(output(status), question="Provide the input?",
+                                       recommendation="Stage the CSV."))
+
+
+def test_blocked_recovery_question_requires_recommendation():
+    with pytest.raises(ValueError):
+        TurnResult.model_validate(dict(output("blocked"), question="Provide the input?"))
+
+
+def test_review_receives_current_clarification_instead_of_assuming_completion(project, store):
+    class ClarifyingRunner:
+        def run(self, project, prompt, schema, **kwargs):
+            if "verdict" in schema["properties"]:
+                assert '"status": "clarification"' in prompt
+                assert '"question": "Are negative sales valid credits?"' in prompt
+                return {"verdict": "PASS_WITH_COMMENTS", "summary": "Assessment is ready for a decision.",
+                        "findings": [], "evidence": ["Reviewed assessment.txt"]}
+            return dict(output("clarification"), question="Are negative sales valid credits?",
+                        recommendation="Quarantine pending confirmation.",
+                        artifacts=[{"path": "assessment.txt", "content": "Credit policy is unspecified."}])
+
+    task = store.create(project.id, "Build sales aggregation", "write")
+    report = Orchestrator(store, ClarifyingRunner()).run(project, task["id"], "Inspect source first")
+    assert report["status"] == "clarifying"
+    assert report["cloud_eligible"] is False

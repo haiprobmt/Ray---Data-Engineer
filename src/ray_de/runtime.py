@@ -56,6 +56,33 @@ def clean_env() -> dict[str, str]:
     return result
 
 
+def codex_env() -> dict[str, str]:
+    """Resolve model subprocess tools without Store app aliases or user profiles."""
+    env = clean_env()
+    paths = []
+    for entry in env.get("PATH", "").split(os.pathsep):
+        if not entry:
+            continue
+        if os.name == "nt":
+            # Codex resolves even an explicit PowerShell tool path by shell type,
+            # choosing pwsh from PATH first. Store pwsh cannot launch under the
+            # restricted token. Keep standalone runtimes, including Codex bundles.
+            candidate = Path(entry.strip('"')) / "pwsh.exe"
+            try:
+                resolved = candidate.resolve()
+            except OSError:
+                resolved = candidate
+            parts = [p.lower() for p in resolved.parts]
+            if "windowsapps" in parts:
+                tail = parts[parts.index("windowsapps") + 1:]
+                if tail and (tail[0] == "pwsh.exe" or tail[0].startswith("microsoft.powershell")):
+                    continue
+        paths.append(entry)
+    # Commands use the same pinned Python environment as Ray itself.
+    env["PATH"] = os.pathsep.join([str(Path(sys.executable).parent), *paths])
+    return env
+
+
 def probe(binary: str, args: list[str], *, env=None) -> dict:
     try:
         result = subprocess.run(

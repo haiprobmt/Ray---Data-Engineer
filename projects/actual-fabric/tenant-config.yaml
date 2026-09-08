@@ -1,0 +1,140 @@
+# Operator-owned template: synthetic IDs; no cloud operations are enabled.
+project_id: fabric-tenant-dev-fmd-admin
+name: Fabric tenant DEV deployment
+repo_path: repo
+policy:
+  local_write: true
+  fabric_dev_write: true
+  fabric_test_write: false
+  fabric_prod_write: false
+fabric:
+  workspaces:
+    - {id: ece344cc-c8f6-4724-92c6-981d079b7847, environment: DEV}
+  allow_definition_export: false
+  workspace_write: false
+  create_items: false
+  tenant:
+    tenant_id: 1d668e27-c3ce-441b-8243-c41af2f40f6d
+    client_id: 9705bdb6-636a-4320-a9a3-fcdc6cb6db08
+    # Change the Entra Object ID here to select a different default workspace admin.
+    workspace_admins:
+      primary: {id: 55cc86e6-fa14-4181-9254-383e88f3e6b1, type: User}
+    github:
+      owner: haiprobmt
+      repository: fabric-tenant
+      branch: main
+      credential_ref: github
+      workspaces:
+        - {workspace: ece344cc-c8f6-4724-92c6-981d079b7847, directory: workspaces/dev-fmd-configuration, environment: DEV}
+        - {workspace: '@create-code', directory: workspaces/dev-fmd-code, environment: DEV}
+        - {workspace: '@create-data', directory: workspaces/dev-fmd-data, environment: DEV}
+    grants:
+      - key: create-code
+        operation: create_workspace
+        parameters: {displayName: DEV_FMD_CODE, capacityId: 5abea130-8b8d-4880-98d4-a2c3d411ab58}
+      - key: create-data
+        operation: create_workspace
+        parameters: {displayName: DEV_FMD_DATA, capacityId: 5abea130-8b8d-4880-98d4-a2c3d411ab58}
+      - {key: code-capacity, operation: assign_capacity, workspace: '@create-code', parameters: {capacityId: 5abea130-8b8d-4880-98d4-a2c3d411ab58}}
+      - {key: code-identity, operation: provision_identity, workspace: '@create-code'}
+      - {key: execution-app, operation: create_application, parameters: {displayName: Ray FMD DEV execution}}
+      - key: execution-principal
+        operation: create_service_principal
+        parameters: {appId: {resourceRef: execution-app, field: appId}}
+      - key: execution-credential
+        operation: create_application_credential
+        parameters:
+          applicationId: {resourceRef: execution-app}
+          credential_ref: fmd-execution
+          displayName: FMD DEV execution
+          # Replace with an explicit UTC expiry within one year when enrolling.
+          endDateTime: '2027-03-01T00:00:00Z'
+      - {key: execution-group, operation: create_group, parameters: {displayName: FMD DEV execution, mailNickname: fmd-dev-execution}}
+      - key: execution-membership
+        operation: add_group_member
+        parameters: {groupId: {resourceRef: execution-group}, memberId: {resourceRef: execution-principal}}
+      - key: configuration-role
+        operation: assign_workspace_role
+        workspace: ece344cc-c8f6-4724-92c6-981d079b7847
+        parameters: {principal: {id: {resourceRef: execution-principal}, type: ServicePrincipal}, role: Member}
+      - key: code-role
+        operation: assign_workspace_role
+        workspace: '@create-code'
+        parameters: {principal: {id: {resourceRef: execution-principal}, type: ServicePrincipal}, role: Member}
+      - key: data-role
+        operation: assign_workspace_role
+        workspace: '@create-data'
+        parameters: {principal: {id: {resourceRef: execution-principal}, type: ServicePrincipal}, role: Member}
+      - key: configuration-user-admin
+        operation: assign_workspace_role
+        workspace: ece344cc-c8f6-4724-92c6-981d079b7847
+        parameters: {principal: {principalRef: primary}, role: Admin}
+      - key: code-user-admin
+        operation: assign_workspace_role
+        workspace: '@create-code'
+        parameters: {principal: {principalRef: primary}, role: Admin}
+      - key: data-user-admin
+        operation: assign_workspace_role
+        workspace: '@create-data'
+        parameters: {principal: {principalRef: primary}, role: Admin}
+      - key: code-folders
+        operation: create_folder
+        workspace: '@create-code'
+        parameters: {allowed_names: [Orchestration, Transformation, Shared]}
+      - {key: code-move, operation: move_item, workspace: '@create-code'}
+      - {key: repository, operation: github_create_repository}
+      - {key: publish, operation: github_publish}
+      - key: github-connection
+        operation: create_connection
+        parameters:
+          displayName: CON_RAY_GITHUB
+          connectionDetails:
+            type: GitHubSourceControl
+            creationMethod: GitHubSourceControl.Contents
+            parameters: [{name: url, dataType: Text, value: 'https://github.com/haiprobmt/fabric-tenant'}]
+          credentialDetails:
+            credentials: {credentialType: Key, key: {secretRef: github}}
+      - key: sql-connection
+        operation: create_connection
+        parameters:
+          displayName: CON_FMD_FABRIC_SQL
+          # This resolves only after a successful SQL foundation creation receipt.
+          sqlDatabase: {workspace: ece344cc-c8f6-4724-92c6-981d079b7847, createdItemName: SQL_FMD_FRAMEWORK}
+          connectionDetails: {type: SQL, creationMethod: SQL, parameters: []}
+          credentialDetails:
+            credentials:
+              credentialType: ServicePrincipal
+              tenantId: 1d668e27-c3ce-441b-8243-c41af2f40f6d
+              servicePrincipalClientId: {resourceRef: execution-app, field: appId}
+              servicePrincipalSecret: {secretRef: fmd-execution}
+      - key: sql-connection-role
+        operation: assign_connection_role
+        parameters:
+          connectionId: {resourceRef: sql-connection}
+          principal: {id: {resourceRef: execution-principal}, type: ServicePrincipal}
+          role: User
+      - key: configuration-connect
+        operation: git_connect
+        workspace: ece344cc-c8f6-4724-92c6-981d079b7847
+        parameters: {connectionId: {resourceRef: github-connection}}
+      - key: code-connect
+        operation: git_connect
+        workspace: '@create-code'
+        parameters: {connectionId: {resourceRef: github-connection}}
+      - key: data-connect
+        operation: git_connect
+        workspace: '@create-data'
+        parameters: {connectionId: {resourceRef: github-connection}}
+      - {key: configuration-initialize, operation: git_initialize, workspace: ece344cc-c8f6-4724-92c6-981d079b7847, parameters: {initializationStrategy: PreferWorkspace}}
+      - {key: code-initialize, operation: git_initialize, workspace: '@create-code', parameters: {initializationStrategy: PreferWorkspace}}
+      - {key: data-initialize, operation: git_initialize, workspace: '@create-data', parameters: {initializationStrategy: PreferWorkspace}}
+      - {key: configuration-baseline, operation: git_commit, workspace: ece344cc-c8f6-4724-92c6-981d079b7847}
+      - {key: code-baseline, operation: git_commit, workspace: '@create-code'}
+      - {key: data-baseline, operation: git_commit, workspace: '@create-data'}
+      - {key: configuration-update, operation: git_update, workspace: ece344cc-c8f6-4724-92c6-981d079b7847}
+      - {key: code-update, operation: git_update, workspace: '@create-code'}
+      - {key: data-update, operation: git_update, workspace: '@create-data'}
+validation_commands:
+  - ['{python}', '-m', ray_de.tenant_repository, '.', --validate]
+post_validation_commands: []
+timeout_seconds: 600

@@ -4,6 +4,29 @@ import pytest
 from ray_de.fabric_worker import request, NoRedirect
 
 
+def test_notebook_output_beta_route_is_read_only():
+    path = "workspaces/11111111-1111-1111-1111-111111111111/notebooks/22222222-2222-2222-2222-222222222222/jobs/execute/instances/33333333-3333-3333-3333-333333333333?beta=true"
+    assert request("get", path, token="synthetic", opener=Opener())["status_code"] == 200
+    for method, endpoint in [("post", path), ("get", path.replace("true", "false")),
+                             ("get", "workspaces/example/items?beta=true")]:
+        with pytest.raises(ValueError):
+            request(method, endpoint, token="synthetic", opener=Opener())
+
+
+def test_environment_publish_version_route_reaches_transport():
+    path = "workspaces/11111111-1111-1111-1111-111111111111/environments/22222222-2222-2222-2222-222222222222/staging/publish?beta=false"
+    opener = Opener()
+    assert request("post", path, token="synthetic", opener=opener)["status_code"] == 200
+    assert len(opener.calls) == 1
+    assert opener.calls[0].method == "POST"
+    assert opener.calls[0].full_url == "https://api.fabric.microsoft.com/v1/" + path
+    for method, endpoint in [("get", path), ("patch", path), ("post", path.replace("false", "true")),
+                             ("post", path + "&format=FabricGitSource"),
+                             ("post", path.replace("/staging/publish", "/publish"))]:
+        with pytest.raises(ValueError):
+            request(method, endpoint, token="synthetic", opener=Opener())
+
+
 class Response(io.BytesIO):
     status = 200
 

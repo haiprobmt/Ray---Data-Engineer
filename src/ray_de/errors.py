@@ -5,10 +5,50 @@ import subprocess
 from pydantic import ValidationError
 
 
+# Fixed schema diagnostics only: input values, arbitrary keys, exception context
+# and service messages must never reach saved reports or chat.
+VALIDATION_FIELDS = frozenset("response status message user_summary next_step user_notes recommendation question options evidence skills_used cloud_actions artifacts read_requests continue_work operation workspace_id item_id definition_path path content schema_name table_name job_id verdict summary findings offer_work read_paths".split())
+VALIDATION_TYPES = {
+    "missing": "MISSING_FIELD", "literal_error": "INVALID_CHOICE", "extra_forbidden": "UNEXPECTED_FIELD",
+    "string_too_long": "TOO_LONG", "string_too_short": "TOO_SHORT", "too_long": "TOO_LONG",
+    "too_short": "TOO_SHORT", "string_pattern_mismatch": "INVALID_FORMAT",
+}
+VALIDATION_RULES = {
+    "Read requests require a working turn without writes or artifacts": "READ_WRITE_MIX",
+    "Continuation requires a completed source stage": "CONTINUATION_STATUS",
+    "Clarification requires one question and a recommendation": "CLARIFICATION_INCOMPLETE",
+    "Completion requires evidence": "COMPLETION_EVIDENCE_MISSING",
+    "A blocked recovery question requires a recommendation": "RECOVERY_INCOMPLETE",
+    "A question belongs to a clarification or blocked result": "QUESTION_STATUS",
+    "A job ID belongs only to a notebook output read": "JOB_READ_MISMATCH",
+    "A table name is required for SQL reads": "TABLE_REQUIRED",
+}
+VALIDATION_CODES = frozenset(VALIDATION_TYPES.values()) | frozenset(VALIDATION_RULES.values()) | {"INVALID_VALUE", "MALFORMED_JSON"}
+
+
+def validation_issues(exc):
+    if isinstance(exc, json.JSONDecodeError):
+        return [{"field": "response", "code": "MALFORMED_JSON"}]
+    issues = []
+    for issue in exc.errors(include_input=False, include_context=False, include_url=False)[:5]:
+        location = issue.get("loc", ())
+        field = location[0] if location and location[0] in VALIDATION_FIELDS else "response"
+        code = VALIDATION_RULES.get(issue.get("msg", "").removeprefix("Value error, "),
+                                    VALIDATION_TYPES.get(issue.get("type"), "INVALID_VALUE"))
+        item = {"field": field, "code": code}
+        if item not in issues:
+            issues.append(item)
+    return issues
+
+
 ERRORS = {
+    "MODEL_IDLE_TIMEOUT": ("The model stopped reporting progress while preparing the local work.", "The task and any draft files are saved. Resume the same task to continue; review is still required before any new Fabric change."),
+    "MODEL_TIME_LIMIT": ("The model reached the maximum time for one step.", "The task and any draft files are saved. Resume the same task and finish the remaining work in a smaller stage."),
+    "FABRIC_DEFINITION_CHANGED": ("The live Fabric definition differs from the reviewed source. Ray has not submitted the job.", "Inspect the live definition, reconcile the local source, and obtain fresh validation and review before running. Do not repeat item creation."),
     "FABRIC_SQL_SIGNIN_REQUIRED": ("Ray could not obtain SQL authorization for this profile. SQL authentication is separate from Fabric metadata access.", "Use /workspace login-sql and run its local PowerShell command to authorize SQL access, then resume the task. /workspace check tests metadata only."),
     "FABRIC_SQL_SETUP": ("Ray's SQL read transport needs pyodbc 5.3.0 and Microsoft ODBC Driver 18 for SQL Server.", "Install Ray's Fabric dependencies and ODBC Driver 18 on the host, then resume."),
     "FABRIC_SQL_NOT_READY": ("The Lakehouse SQL analytics endpoint is not ready.", "Check its provisioning status in Fabric, then resume when it is ready."),
+    "FABRIC_SQL_TABLE_UNAVAILABLE": ("The requested table is not visible to the SQL analytics endpoint.", "Check the table and schema against Lakehouse metadata. Newly written Delta tables may still be synchronizing; preserve successful job receipts and explicitly recheck later."),
     "FABRIC_SQL_UNAVAILABLE": ("Ray could not query the Lakehouse SQL analytics endpoint.", "Check SQL read permissions, local Fabric sign-in, and network access to port 1433, then resume."),
     "FABRIC_READ_TOO_LARGE": ("The Fabric read exceeded Ray's bounded result size.", "Request table schema or row count instead of a wide preview."),
     "MODEL_SCHEMA_REJECTED": ("The model service rejected Ray's response schema before answering.", "Update Ray's schema handling, then explicitly resume the task."),
@@ -68,7 +108,10 @@ def model_error_code(error):
 
 
 def describe_error(exc, stage="task"):
-    if isinstance(exc, RayError):
+    from .model_progress import ModelTimeout
+    if isinstance(exc, ModelTimeout):
+        code = exc.code
+    elif isinstance(exc, RayError):
         code = exc.code
     elif isinstance(exc, (TimeoutError, subprocess.TimeoutExpired)):
         code = "TIMED_OUT"
@@ -83,9 +126,14 @@ def describe_error(exc, stage="task"):
         code = "POLICY_REJECTED" if isinstance(exc, PolicyError) else "INVALID_REQUEST"
     else:
         code = "UNKNOWN"
-    stage = stage if stage in {"task", "model", "review", "fabric_read", "cloud_action", "conversation"} else "task"
+    stage = stage if stage in {"task", "model", "review", "validation", "fabric_read", "cloud_action", "conversation"} else "task"
     message, next_step = ERRORS[code]
-    return {"code": code, "stage": stage, "message": message, "next_step": next_step}
+    result = {"code": code, "stage": stage, "message": message, "next_step": next_step}
+    if isinstance(exc, ModelTimeout):
+        result["timing"] = exc.details
+    if code == "MODEL_OUTPUT_INVALID" and isinstance(exc, (ValidationError, json.JSONDecodeError)):
+        result["validation_issues"] = validation_issues(exc)
+    return result
 
 
 def error_text(error):
@@ -93,7 +141,18 @@ def error_text(error):
     code = error.get("code") if isinstance(error, dict) else "UNKNOWN"
     code = code if isinstance(code, str) and code in ERRORS else "UNKNOWN"
     message, next_step = ERRORS[code]
-    return f"Error: {message}\nNext step: {next_step}\nReference: {code}"
+    text = f"Error: {message}\nNext step: {next_step}\nReference: {code}"
+    issues = error.get("validation_issues") if isinstance(error, dict) else None
+    if code == "MODEL_OUTPUT_INVALID" and isinstance(issues, list):
+        for issue in issues[:5]:
+            if (isinstance(issue, dict) and isinstance(issue.get("field"), str) and issue["field"] in VALIDATION_FIELDS
+                    and isinstance(issue.get("code"), str) and issue["code"] in VALIDATION_CODES):
+                text += f"\nReply check: {issue['field']} ({issue['code']})."
+    if isinstance(error, dict) and error.get("timing"):
+        timing = error["timing"]
+        if isinstance(timing, dict) and all(type(timing.get(k)) is int for k in ("elapsed_seconds", "idle_seconds", "total_limit_seconds")):
+            text += f"\nTiming: {timing['elapsed_seconds']}s elapsed; {timing['idle_seconds']}s without progress; {timing['total_limit_seconds']}s maximum."
+    return text
 
 
 def record_failure(store, project_id, task_id, exc, stage="task", status="ERROR"):

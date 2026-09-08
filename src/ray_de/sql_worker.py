@@ -31,14 +31,35 @@ def query(request):
     raise ValueError("Unsupported SQL operation")
 
 
-def sql_token(*, interactive=False):
+def sql_token(*, interactive=False, browser=False):
+    if browser and not interactive:
+        raise ValueError("Browser authorization requires explicit interactive login")
     if version("ms-fabric-cli") != "1.7.0":
         raise ModuleNotFoundError("Pinned Fabric auth adapter unavailable")
     from fabric_cli.core.fab_auth import FabAuth
     from fabric_cli.core.fab_exceptions import FabricCLIError
     from fabric_cli.core import fab_constant
+    from .fabric_auth import load_service_principal
     try:
-        token = FabAuth().get_access_token(["https://database.windows.net/.default"], interactive_renew=interactive)
+        auth = load_service_principal(FabAuth())
+        scope = ["https://database.windows.net/.default"]
+        if browser:
+            import msal
+            if auth.get_identity_type() != "user":
+                raise PermissionError("Browser sign-in requires an existing Fabric user profile")
+            # Version-checked adapter: retain the enrolled tenant, client and encrypted
+            # project cache. Only an explicit local login may launch browser UI.
+            app = msal.PublicClientApplication(
+                client_id=fab_constant.AUTH_DEFAULT_CLIENT_ID,
+                authority=auth._get_authority_url(),
+                token_cache=auth._get_app().token_cache,
+                enable_broker_on_windows=False,
+                enable_broker_on_mac=False,
+            )
+            result = app.acquire_token_interactive(scopes=scope, prompt="select_account", timeout=300)
+            token = result.get("access_token") if isinstance(result, dict) else None
+        else:
+            token = auth.get_access_token(scope, interactive_renew=interactive)
     except FabricCLIError as exc:
         if exc.status_code == fab_constant.ERROR_AUTHENTICATION_FAILED:
             raise PermissionError("SQL sign-in required") from None
@@ -88,14 +109,14 @@ def execute(request, *, connect=None, token=None):
         connection.close()
 
 
-def main(*, login=False):
+def main(*, login=False, browser=False):
     try:
         request = None if login else json.loads(sys.stdin.read(4097))
         with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
             if login:
                 # Only the explicit local login command enables interactive auth.
                 # Never print, return or persist the token outside the auth cache.
-                sql_token(interactive=True)
+                sql_token(interactive=True, browser=browser)
                 data = {"sql_signin": "ready", "note": "SQL token acquired; database permissions and connectivity are not yet verified."}
             else:
                 data = execute(request)
@@ -105,13 +126,16 @@ def main(*, login=False):
         code = "FABRIC_SQL_SETUP"
     except PermissionError:
         code = "FABRIC_SQL_SIGNIN_REQUIRED"
-    except Exception:
-        code = "FABRIC_SQL_UNAVAILABLE"
+    except OverflowError:
+        code = "FABRIC_READ_TOO_LARGE"
+    except Exception as exc:
+        # Never expose ODBC messages, which may include connection or source data.
+        code = "FABRIC_SQL_TABLE_UNAVAILABLE" if exc.args and exc.args[0] == "42S02" else "FABRIC_SQL_UNAVAILABLE"
     print(json.dumps({"error_code": code}))
     return 1
 
 
 if __name__ == "__main__":
-    if sys.argv[1:] not in ([], ["--login"]):
+    if sys.argv[1:] not in ([], ["--login"], ["--login", "--browser"]):
         raise SystemExit("Unsupported SQL worker arguments")
-    sys.exit(main(login=sys.argv[1:] == ["--login"]))
+    sys.exit(main(login="--login" in sys.argv[1:], browser="--browser" in sys.argv[1:]))

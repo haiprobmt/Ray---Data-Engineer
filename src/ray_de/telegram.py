@@ -16,6 +16,9 @@ from .secrets import load_token
 from .onboarding import WorkspaceRegistry
 from .conversation import ConversationService
 from .errors import describe_error, error_text, record_failure
+from .telegram_format import formatted_chunks, task_message, task_details, friendly_error
+from .documents import check_file, read_document, ReadError, MAX_BYTES
+from .github_reading import NoRedirect, github_urls
 
 
 class Access(StrictModel):
@@ -63,7 +66,7 @@ class TelegramAPI:
         self._token = token
 
     def _request(self, method, payload):
-        if method not in {"getUpdates", "sendMessage", "answerCallbackQuery", "getMe", "getWebhookInfo"}:
+        if method not in {"getUpdates", "sendMessage", "answerCallbackQuery", "getMe", "getWebhookInfo", "getFile"}:
             raise ValueError("Unsupported Telegram method")
         request = urllib.request.Request(
             "https://api.telegram.org/bot" + self._token + "/" + method,
@@ -84,6 +87,31 @@ class TelegramAPI:
 
     async def call(self, method, payload):
         return await asyncio.to_thread(self._request, method, payload)
+
+    def download_document(self, document):
+        import re
+        from urllib.parse import quote
+        check_file(document.get("file_name", ""), document.get("file_size", 0))
+        file_id = document.get("file_id")
+        if not isinstance(file_id, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,512}", file_id):
+            raise ReadError("Telegram did not provide a valid file. Please attach it again.")
+        try:
+            info = self._request("getFile", {"file_id": file_id})
+            check_file(document["file_name"], info.get("file_size", 0))
+            path = info.get("file_path", "")
+            if not re.fullmatch(r"[A-Za-z0-9_./-]{1,512}", path) or path.startswith("/") or any(p in {"", ".", ".."} for p in path.split("/")):
+                raise ReadError("Telegram did not provide a valid file location. Please attach it again.")
+            request = urllib.request.Request("https://api.telegram.org/file/bot" + self._token + "/" + quote(path, safe="/"))
+            with urllib.request.build_opener(NoRedirect()).open(request, timeout=25) as response:
+                if int(response.headers.get("Content-Length", "0")) > MAX_BYTES:
+                    raise ReadError("This file is too large. Send a file smaller than 20 MB.")
+                data = response.read(MAX_BYTES + 1)
+            check_file(document["file_name"], len(data))
+            return data
+        except ReadError:
+            raise
+        except Exception:
+            raise ReadError("I couldn't download this file from Telegram. Please attach it again.") from None
 
 
 class Gateway:
@@ -166,11 +194,14 @@ class Gateway:
             return None
         return f"telegram:{match.user_id}:{match.chat_id}", match, message, callback
 
-    async def send(self, actor, text, keyboard=None):
+    async def send(self, actor, text, keyboard=None, *, formatted=False):
         chat = int(actor.split(":")[-1])
-        pieces = list(chunks(redact(text))) or ["No message"]
-        for index, piece in enumerate(pieces):
+        safe = redact(text)
+        pieces = list(formatted_chunks(safe) if formatted else ((piece, []) for piece in chunks(safe))) or [("No message", [])]
+        for index, (piece, entities) in enumerate(pieces):
             payload = {"chat_id": chat, "text": piece}
+            if entities:
+                payload["entities"] = entities
             if keyboard and index == len(pieces) - 1:
                 payload["reply_markup"] = {"inline_keyboard": keyboard}
             with self.store.connect() as db:
@@ -216,7 +247,8 @@ class Gateway:
         if sql:
             return ("Authorize SQL access on the Ray computer using PowerShell:\n" + command + "sql\n"
                     "Complete Microsoft sign-in with the same workspace account, then /resume the failed task. "
-                    "The workspace check tests Fabric metadata; SQL uses separate authorization.")
+                    "The workspace check tests Fabric metadata; SQL uses separate authorization. "
+                    "If the Windows broker fails, append --browser to this SQL login command.")
         return ("Sign in on the Ray computer using PowerShell:\n" + command + "fabric\n"
                 + command + "codex\nThen send /workspace check here.")
 
@@ -247,10 +279,22 @@ class Gateway:
             if callback:
                 await self.callback(actor, session, project, callback)
                 return
-            text = message.get("text", "").strip()
+            text = (message.get("text") or message.get("caption") or "").strip()
+            if message.get("document"):
+                if self.busy(actor):
+                    await self.send(actor, "Give me a moment to finish. Then send the file again, or use /stop first.")
+                    return
+                if len(text) > 16000 or redact(text) != text:
+                    raise ReadError("The caption is too long or appears to contain a credential. Send a shorter caption without secrets.")
+                document = message["document"]
+                check_file(document.get("file_name", ""), document.get("file_size", 0))
+                self.launch_conversation(actor, session, project, self.projects[access.projects[0]],
+                                         text or "Read this attached file and give me a short, clear summary.", document=document)
+                await self.send(actor, "I'm reading your file. You can use /stop to pause.")
+                return
             if not text:
                 await self.send(
-                    actor, "Send a text task. File and voice intake are not enabled."
+                    actor, "Send a message, a GitHub repository link, or an MD, DOCX, PDF, XLSX or XLS file. Voice intake is not enabled."
                 )
                 return
             if len(text) > 16000:
@@ -273,25 +317,29 @@ class Gateway:
                     + ". No new write will start. Already submitted Fabric jobs are not cancelled.",
                 )
                 return
+            if command == "/details":
+                if rest not in {"", "technical"}:
+                    raise ValueError("Use /details for a short update, or /details technical for full logs.")
+                if not session["task_id"]:
+                    await self.send(actor, "There is no current task. Send a request with /work first.")
+                    return
+                task = self.store.task(project.id, session["task_id"])
+                report = json.loads(task["result"]) if task.get("result") else {}
+                report["cloud_plans"] = CloudActions(project, self.store, self.data_dir).receipts(task["id"])
+                await self.send(actor, task_details(project.id, task, report, technical=rest == "technical"), formatted=True)
+                return
             if command == "/status":
                 task = (
                     self.store.task(project.id, session["task_id"])
                     if session["task_id"]
                     else None
                 )
-                detail = ""
-                if task and task.get("result"):
-                    result = json.loads(task["result"])
-                    if result.get("error") and task["status"] in {"ERROR", "BLOCKED", "PAUSED"}:
-                        detail = "\n" + error_text(result["error"])
-                    elif task["status"] in {"ERROR", "BLOCKED", "PAUSED"} and result.get("message"):
-                        detail = "\n" + redact(result["message"])
-                if task and task["status"] == "ERROR" and not detail:
-                    detail = "\nThe previous version did not record this error's cause. Use /doctor to check readiness before explicitly resuming."
-                await self.send(
-                    actor,
-                    f"Project: {project.id}\nMode: {session['mode']}\nTask: {task['id'] if task else 'none'}\nState: {task['status'] if task else 'WAITING'}" + detail,
-                )
+                if task:
+                    report = json.loads(task["result"] or "{}")
+                    report["cloud_plans"] = CloudActions(project, self.store, self.data_dir).receipts(task["id"])
+                    await self.send(actor, task_details(project.id, task, report), formatted=True)
+                else:
+                    await self.send(actor, "No task is selected. Use /work followed by what you'd like done.")
                 for row in self.control.pending(actor, project.id):
                     await self.show_decision(row)
                 return
@@ -307,7 +355,7 @@ class Gateway:
             if command == "/help":
                 await self.send(
                     actor,
-                    "Just talk to me normally. For project work, I can offer a button or you can use /work <request>. /forget clears the recent conversation I use. Other controls: /connect DEV|TEST|PROD <workspace URL or UUID>, /workspace [check|login], /project, /mode read|write, /new, /resume [task-id], /status, /stop, /memory [query], /remember title | context | decision | consequences, /actions, /rate 0-4, /doctor.",
+                    "Talk normally, attach an MD, DOCX, PDF or Excel file, or paste a public GitHub repository link. Add what you'd like checked. Files can be up to 20 MB; scanned PDFs need OCR. To start project work, use /work <request>. /status or /details gives a short update; /details technical shows full logs. /stop pauses; /resume continues. /forget clears recent chat and file text. Other controls: /connect DEV|TEST|PROD <workspace URL or UUID>, /workspace [check|login], /project, /mode read|write, /new, /memory [query], /remember title | context | decision | consequences, /actions, /rate 0-4, /doctor.",
                 )
                 return
             if self.busy(actor):
@@ -318,7 +366,7 @@ class Gateway:
                 return
             if command == "/forget":
                 self.conversation.clear(actor)
-                await self.send(actor, "I've cleared the recent conversation I use for our chats. Project records and Telegram message history are still there.")
+                await self.send(actor, "I've cleared the recent chat and file text I use for our conversations. Project task records and Telegram message history are still there.")
                 return
             if command == "/project":
                 if not rest:
@@ -348,7 +396,7 @@ class Gateway:
             if command == "/workspace":
                 if rest not in {"", "check", "login", "login-sql", "enable-write"}:
                     raise ValueError("Use /workspace [check|login|login-sql|enable-write]")
-                if not project.config.fabric.workspaces:
+                if not project.workspaces:
                     await self.send(actor, "No Fabric workspace configured. Send /connect DEV|TEST|PROD <workspace URL or UUID>.")
                 elif rest == "enable-write":
                     if not self.registry or not access.allow_workspace_setup:
@@ -367,7 +415,7 @@ class Gateway:
                     await self.send(actor, "Checking Fabric workspace access...")
                 else:
                     await self.send(actor, "Selected project: " + project.id + "\n" + "\n".join(
-                        f"{w.environment}: {w.id}" for w in project.config.fabric.workspaces
+                        f"{w.environment}: {w.id}" for w in project.workspaces
                     ) + "\nUse /workspace check to test live access, or /workspace login for local sign-in commands.")
                 return
             if command == "/mode":
@@ -449,15 +497,17 @@ class Gateway:
                 session = self.control.session(actor)
             elif command.startswith("/"):
                 raise ValueError("Unknown command; use /help")
-            elif self.config.conversational:
+            elif await self.confirm_work_handoff(actor, session, project, text):
+                return
+            elif self.config.conversational or github_urls(text):
                 self.launch_conversation(actor, session, project, self.projects[access.projects[0]], text)
+                if github_urls(text):
+                    await self.send(actor, "I'm opening the GitHub source and checking the relevant files.")
                 return
             self.launch(actor, session, project, text)
             await self.send(
                 actor,
-                "I am working on "
-                + project.id
-                + ". Use /stop to pause. No raw logs will be sent.",
+                "I’m working on your request. Use /stop to pause.",
             )
         except (ValueError, RuntimeError) as exc:
             await self.send(actor, "Cannot continue: " + redact(str(exc))[:1000])
@@ -468,6 +518,31 @@ class Gateway:
             )
         finally:
             self.control.received_done(update["update_id"])
+
+    async def confirm_work_handoff(self, actor, session, project, text):
+        # Only a direct, unambiguous confirmation of the selected pending task.
+        # This never consumes a cloud approval or a clarification decision.
+        confirmation = " ".join(text.lower().strip(" .!,").split())
+        if confirmation not in {"yes", "yes please", "ok", "okay", "go ahead", "ok go ahead",
+                                "okay go ahead", "ok sure go ahead", "sure go ahead", "please proceed", "proceed"}:
+            return False
+        task_id = session["task_id"]
+        if not task_id or not self.owns(actor, project.id, task_id):
+            return False
+        pending = [row for row in self.control.pending(actor, project.id) if row["task_id"] == task_id]
+        if len(pending) != 1 or pending[0]["kind"] != "work_handoff":
+            return False
+        if self.store.task(project.id, task_id)["status"] != "WAITING":
+            return False
+        self.control.answer(pending[0]["id"], actor, project.id, 0)
+        await self.start_handoff(actor, session, project)
+        return True
+
+    async def start_handoff(self, actor, session, project):
+        task = self.store.task(project.id, session["task_id"])
+        self.control.resume(project.id)
+        self.launch(actor, session, project, task["objective"])
+        await self.send(actor, "I'll take a look. You can use /stop to pause me.")
 
     def check_workspace(self, actor, project):
         from .fabric import FabricGateway
@@ -482,11 +557,18 @@ class Gateway:
                 await self.send(actor, "Fabric check failed for " + project.id + ".\n" + error_text(describe_error(exc, "fabric_read")))
         self.jobs[actor] = asyncio.create_task(run())
 
-    def launch_conversation(self, actor, session, project, auth_project, text):
+    def launch_conversation(self, actor, session, project, auth_project, text, *, document=None):
         token = self.conversation.begin(actor)
         async def run():
             try:
-                result = await asyncio.to_thread(self.conversation.reply, auth_project, project, actor, text, cancel=token, mode=session["mode"])
+                documents = []
+                if document:
+                    if token:
+                        token.check()
+                    data = await asyncio.to_thread(self.api.download_document, document)
+                    documents.append(await asyncio.to_thread(read_document, document["file_name"], data, cancel=token))
+                    del data
+                result = await asyncio.to_thread(self.conversation.reply, auth_project, project, actor, text, cancel=token, mode=session["mode"], documents=documents)
                 if token:
                     token.check()
                 keyboard = None
@@ -504,11 +586,13 @@ class Gateway:
                     })
                     keyboard = [[{"text": "Work on this", "callback_data": id + ":0"},
                                  {"text": "Just chatting", "callback_data": id + ":1"}]]
-                await self.send(actor, result.message, keyboard)
+                await self.send(actor, result.message, keyboard, formatted=True)
             except TaskStopped:
                 await self.send(actor, "Okay, I've paused. You can talk to me again whenever you like.")
+            except ReadError as exc:
+                await self.send(actor, str(exc))
             except Exception as exc:
-                await self.send(actor, "I couldn't finish my reply.\n" + error_text(describe_error(exc, "conversation")))
+                await self.send(actor, "I couldn't finish my reply.\n" + friendly_error(describe_error(exc, "conversation")))
         self.jobs[actor] = asyncio.create_task(run())
 
     def launch(self, actor, session, project, text):
@@ -540,10 +624,14 @@ class Gateway:
                 report = await asyncio.to_thread(work)
                 await self.send(
                     actor,
-                    f"[{project.id}] {report['message']}\nState: {report['status']}\nTask: {task_id}\n"
-                    + "\n".join(report.get("host_validation", []))
-                    + ("\n" + error_text(report["error"]) if report.get("error") else ""),
+                    task_message(report), formatted=True,
                 )
+                if report["status"] == "blocked" and report.get("question"):
+                    await self.send(
+                        actor,
+                        "**Next step**\n" + report["question"] + "\n\n**Recommendation**\n" + str(report.get("recommendation") or ""),
+                        formatted=True,
+                    )
                 if report["status"] == "clarifying":
                     choices = report.get("options") or [
                         "Proceed with recommendation",
@@ -571,7 +659,7 @@ class Gateway:
                         await self.approval_button(actor, project, plan["id"])
             except TaskStopped:
                 self.store.update(project.id, task_id, "PAUSED")
-                await self.send(actor, "Task paused: " + task_id)
+                await self.send(actor, "⏸ Paused. Use /resume to continue or /details to inspect the task.")
             except Exception as exc:
                 if report is None:
                     failed = self.store.task(project.id, task_id)
@@ -583,8 +671,9 @@ class Gateway:
                     error = describe_error(exc)
                 await self.send(
                     actor,
-                    "I couldn't finish this request.\n" + error_text(error)
-                    + f"\nTask: {task_id}\nNothing was retried automatically.",
+                    "**⚠️ Couldn’t finish**\n\n" + friendly_error(error)
+                    + "\n\nNothing was retried automatically.\n/details technical — full error details",
+                    formatted=True,
                 )
 
         self.jobs[actor] = asyncio.create_task(run())
@@ -597,10 +686,10 @@ class Gateway:
         ]
         await self.send(
             row["actor"],
-            str(data.get("question", ""))
-            + "\nRecommendation: "
+            "**Your decision**\n" + str(data.get("question", ""))
+            + "\n\n**Recommendation**\n"
             + str(data.get("recommendation", "")),
-            keyboard,
+            keyboard, formatted=True,
         )
 
     async def approval_button(self, actor, project, id):
@@ -652,9 +741,7 @@ class Gateway:
                 self.control.set_session(actor, project.id, mode=session["mode"])
                 await self.send(actor, "Sure, we can just talk.")
             else:
-                task = self.store.task(project.id, row["task_id"])
-                self.launch(actor, session, project, task["objective"])
-                await self.send(actor, "I'll take a look. You can use /stop to pause me.")
+                await self.start_handoff(actor, session, project)
             return
         data = json.loads(row["payload"])
         cloud = CloudActions(project, self.store, self.data_dir)
@@ -679,6 +766,13 @@ class Gateway:
                 await self.send(
                     actor, "Action " + result["id"] + ": " + result["state"]
                 )
+                task = self.store.task(project.id, row["task_id"])
+                report = json.loads(task["result"] or "{}")
+                if result["state"] == "SUCCEEDED" and task["status"] == "WAITING" and report.get("continue_work"):
+                    self.launch(actor, session, project,
+                        "Continue the original objective using the successful action receipts and any remaining proposed actions. "
+                        "Do not repeat completed actions. Review the next dependent stage before proposing it.\n\n"
+                        + task["objective"])
             except Exception as exc:
                 await self.send(
                     actor,

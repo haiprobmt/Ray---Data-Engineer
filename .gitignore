@@ -9,4 +9,10 @@ logs/
 build/
 dist/
 projects/*/config.local.yaml
-
+# Tenant source checkouts have their own Git history.
+/projects/*/repo/
+!/projects/sample-fabric/repo/
+# Credentials belong in the external protected Ray profile.
+/projects/**/*.env
+*.dpapi
+.ray-work/

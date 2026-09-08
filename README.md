@@ -10,7 +10,26 @@ Private runtime enrollment and authentication live outside this checkout.
 Automated cloud/channel tests use synthetic responses and do not establish live
 service acceptance. See [implementation status](docs/implementation-status.md).
 
-Telegram failures include a plain-language error, a next step, and an error reference.
+Ray can read attached MD, DOCX, PDF and Excel files, and inspect public GitHub
+repositories from a pasted link. Follow-up questions can use the recent file text.
+See [file and GitHub reading](docs/document-and-github-reading.md) for supported
+formats, examples and reading limits.
+
+Ray can prepare a pinned FMD Framework DEV installation for configured workspaces,
+including SQL schema and metadata notebooks, bound item definitions, Environment
+publication and verification. See [FMD deployment](docs/fmd-deployment.md) for the staged workflow
+and the live acceptance work that remains.
+
+Ray also supports tenant-local Git repositories, preserving native Fabric item
+identities during folder allocation, and reviewed local -> personal GitHub ->
+Fabric deployment. Explicit service-principal capabilities cover workspace and
+capacity assignment, execution identities, scoped roles/groups and authenticated
+connections. Initial tenant permissions and live enrollment are still required.
+See [tenant Git setup](docs/tenant-git-deployment.md) and the
+[disabled example configuration](docs/examples/tenant-config.yaml).
+
+Telegram failures include a plain-language error and a next step. `/details technical`
+keeps the full checks, error references and item IDs available when needed.
 Task failures are retained for `/status` across restarts, including errors while
 reading Fabric before the model starts. Raw exceptions, credential-bearing URLs,
 and service response bodies are not sent or saved as error details. Unknown causes
@@ -41,6 +60,12 @@ python -m pytest tests -q
 
 ## Use Ray with a local repository
 
+Use [`projects/`](projects/README.md) as the central location for local setup:
+`projects/<tenant>/tenant-config.yaml` holds enrollment, and its sibling `repo/`
+holds the tenant's separate Git checkout. The existing tenant draft is
+`projects/actual-fabric/tenant-config.yaml`. Runtime state and protected credentials
+stay under `%LOCALAPPDATA%/Ray/state`.
+
 The sample project lives in `projects/sample-fabric`. Copy it to a new project
 folder, set a unique `project_id` and point `repo_path` at an existing repository.
 Keep Ray's state outside every engineering repository. `CONTEXT.md` records project
@@ -68,6 +93,12 @@ The official Python SDK is pinned to 0.147.0; standalone CLI 0.153.3 was probed 
 Ray strips inherited cloud/bot credentials from model and validation subprocesses,
 disables model network tools and denies SDK permission escalation. Its reviewer uses
 a fresh read-only thread. Host validation and review determine completion.
+On Windows, fresh isolated profiles explicitly select the non-admin native sandbox;
+an existing `[windows] sandbox = "elevated"` selection in the isolated profile is
+preserved. Ray excludes Store PowerShell aliases from its own subprocess PATH and
+uses its installed Python environment for local commands. `doctor` checks an actual
+sandboxed shell command separately from authentication. See
+[the runtime repair and verification record](docs/runtime-authoring-repair.md).
 
 Project IDs bind immutably to the full configuration and resolved paths. After a
 policy, model or repository-path change, use a new `project_id` and a new reviewed

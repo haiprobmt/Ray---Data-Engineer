@@ -96,6 +96,44 @@ def test_allowlist_private_only_and_deduplication(tmp_path):
     asyncio.run(run())
 
 
+def test_blocked_recovery_question_is_visible_without_approval_buttons(tmp_path):
+    async def run():
+        g, api, svc, p, s = setup(tmp_path)
+        def blocked(*args, **kwargs):
+            return {"status": "blocked", "message": "Input is missing.",
+                    "question": "Can you stage the approved input?",
+                    "recommendation": "Use the project input directory.", "options": []}
+        svc.run = blocked
+        await g.handle(update(1, "Inspect the input"))
+        await asyncio.gather(*g.jobs.values())
+        messages = [payload for method, payload in api.calls if method == "sendMessage"]
+        assert any("Can you stage the approved input?" in m["text"] and
+                   "Use the project input directory." in m["text"] for m in messages)
+        assert all("reply_markup" not in m for m in messages)
+        assert not g.control.pending("telegram:123:123", p.id)
+    asyncio.run(run())
+
+
+def test_readable_reply_retains_task_identifiers_in_details(tmp_path):
+    async def run():
+        g, api, svc, p, s = setup(tmp_path)
+        await g.handle(update(1, "Inspect the input"))
+        await asyncio.gather(*g.jobs.values())
+        messages = [payload for method, payload in api.calls if method == "sendMessage"]
+        summary = next(m for m in messages if "Fixture response" in m["text"])
+        assert summary["text"].startswith("✅ Done\n\n")
+        assert summary["entities"][0]["type"] == "bold"
+        assert "Task:" not in summary["text"] and "State:" not in summary["text"]
+        task_id = svc.calls[-1][1]
+        await g.handle(update(2, "/details"))
+        assert task_id not in api.calls[-1][1]["text"]
+        await g.handle(update(3, "/details technical"))
+        assert task_id in api.calls[-1][1]["text"]
+        assert p.id in api.calls[-1][1]["text"]
+        assert len(svc.calls) == 1
+    asyncio.run(run())
+
+
 def test_callback_survives_restart_and_cannot_replay(tmp_path):
     async def run():
         g, a, svc, p, s = setup(tmp_path)
@@ -127,6 +165,40 @@ def test_callback_survives_restart_and_cannot_replay(tmp_path):
         await reopened.handle(cb)
         assert len(svc.calls) == 2
 
+    asyncio.run(run())
+
+
+def test_approved_dependency_continues_work_without_repeating_action(tmp_path, monkeypatch):
+    import json
+    async def run():
+        g, api, svc, project, store = setup(tmp_path)
+        actor = "telegram:123:123"
+        task = store.create(project.id, "Create notebook then pipeline", "write")
+        g.control.set_session(actor, project.id, task["id"], "write")
+        store.update(project.id, task["id"], "APPROVAL_REQUIRED", result={"status": "approval_required", "continue_work": True})
+        with store.connect() as db:
+            db.execute("INSERT INTO channel_tasks VALUES (?,?,?)", (actor, project.id, task["id"]))
+        decision = g.control.decide(actor, project.id, task["id"], "approval:action", {
+            "options": ["Approve", "Reject"], "plan_id": "action", "digest": "exact-digest"})
+        calls = []
+        class Cloud:
+            def approve(self, id, received_actor, digest):
+                assert (id, received_actor, digest) == ("action", actor, "exact-digest")
+                calls.append("approve")
+            def execute(self, id, received_actor):
+                calls.append("execute")
+                store.update(project.id, task["id"], "WAITING", result={"status": "waiting", "continue_work": True,
+                            "cloud_plans": [{"id": id, "state": "SUCCEEDED"}]})
+                return {"id": id, "state": "SUCCEEDED"}
+        monkeypatch.setattr("ray_de.telegram.CloudActions", lambda *a, **k: Cloud())
+        await g.handle({"update_id": 1, "callback_query": {"id": "callback", "from": {"id": 123},
+            "message": {"chat": {"id": 123, "type": "private"}}, "data": decision + ":0"}})
+        approval_job = g.jobs[actor]
+        await approval_job
+        await g.jobs[actor]
+        assert calls == ["approve", "execute"]
+        assert len(svc.calls) == 1 and svc.calls[0][1] == task["id"]
+        assert "Do not repeat" in svc.calls[0][2] and task["objective"] in svc.calls[0][2]
     asyncio.run(run())
 
 

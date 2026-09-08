@@ -30,6 +30,26 @@ def test_fabric_profiles_are_separate(tmp_path):
     assert a["HOME"] == a["USERPROFILE"]
 
 
+def test_codex_environment_uses_ray_python_and_omits_store_powershell(tmp_path, monkeypatch):
+    import os
+    import sys
+    from pathlib import Path
+    from ray_de.runtime import codex_env
+    if os.name != "nt":
+        pytest.skip("Windows shell resolution")
+    store = tmp_path / "WindowsApps" / "Microsoft.PowerShell_7"
+    native = tmp_path / "PowerShell" / "7"
+    bundle = tmp_path / "WindowsApps" / "OpenAI.CodexRuntime" / "bin"
+    for path in (store, native, bundle):
+        path.mkdir(parents=True)
+        (path / "pwsh.exe").write_bytes(b"fixture")
+    monkeypatch.setenv("PATH", os.pathsep.join(map(str, (store, native, bundle))))
+    monkeypatch.setenv("AZURE_CLIENT_SECRET", "do-not-inherit")
+    env = codex_env()
+    assert env["PATH"].split(os.pathsep) == [str(Path(sys.executable).parent), str(native), str(bundle)]
+    assert "AZURE_CLIENT_SECRET" not in env
+
+
 def test_explicit_missing_binary_does_not_fall_back(monkeypatch, tmp_path):
     monkeypatch.setenv("SENIOR_DE_CODEX_BIN", str(tmp_path / "missing.exe"))
     with pytest.raises(FileNotFoundError):
@@ -51,6 +71,7 @@ def test_vendored_skills_match_lock():
 
 def test_doctor_does_not_treat_fab_exit_zero_as_login(project, tmp_path, monkeypatch):
     monkeypatch.setattr("ray_de.cli.resolve_binary", lambda k: k)
+    monkeypatch.setattr("ray_de.cli.CodexRunner.probe", lambda *a: {"shell_available": False, "error_code": "SANDBOX_FAILED"})
 
     def probe(binary, args, **kw):
         if args == ["--version"]:
@@ -65,10 +86,40 @@ def test_doctor_does_not_treat_fab_exit_zero_as_login(project, tmp_path, monkeyp
     report = doctor(project, tmp_path)
     assert report["checks"]["fab"]["authenticated"] is False
     assert "never-display" not in json.dumps(report)
+    assert report["ready_for_command_execution"] is False
+
+
+def test_shell_probe_uses_read_only_sdk_execution_and_redacts_failures(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+    from openai_codex import CodexConfig
+    from ray_de.sdk_worker import probe_shell
+    calls = []
+
+    class Client:
+        def __init__(self, config): pass
+        def __enter__(self): return self
+        def __exit__(self, *a): pass
+        def initialize(self): pass
+        def request(self, method, params, **kwargs):
+            calls.append((method, params))
+            return SimpleNamespace(exit_code=0, stdout="ray-runtime-ok\n")
+
+    monkeypatch.setattr("openai_codex.client.CodexClient", Client)
+    monkeypatch.setattr("shutil.which", lambda name: "shell.exe")
+    config = CodexConfig(cwd=str(tmp_path))
+    assert probe_shell(config)["shell_available"]
+    assert calls[0][0] == "command/exec"
+    assert calls[0][1]["sandboxPolicy"] == {"type": "readOnly"}
+    def fail(*a, **kw): raise RuntimeError("private-token-never-emit")
+    monkeypatch.setattr(Client, "request", fail)
+    result = probe_shell(config)
+    assert result["error_code"] == "SANDBOX_FAILED"
+    assert "private-token" not in json.dumps(result)
 
 
 @pytest.mark.parametrize("conversation", [False, True])
-def test_worker_checkpoints_only_after_turn_is_accepted(tmp_path, monkeypatch, conversation):
+@pytest.mark.parametrize("windows_mode", [None, "elevated"])
+def test_worker_checkpoints_only_after_turn_is_accepted(tmp_path, monkeypatch, conversation, windows_mode):
     from types import SimpleNamespace
     import openai_codex
     from ray_de.sdk_worker import run
@@ -76,10 +127,13 @@ def test_worker_checkpoints_only_after_turn_is_accepted(tmp_path, monkeypatch, c
     checkpoint = tmp_path / "checkpoint.json"
     result_path = tmp_path / "result.json"
     request = tmp_path / "request.json"
+    if windows_mode:
+        (tmp_path / "config.toml").write_text('[windows]\nsandbox = "' + windows_mode + '"\n')
     request.write_text(
         json.dumps(
             {
                 "binary": "codex.exe",
+                "home": str(tmp_path),
                 "repo": str(tmp_path),
                 "read_only": True,
                 "thread_id": None,
@@ -93,9 +147,12 @@ def test_worker_checkpoints_only_after_turn_is_accepted(tmp_path, monkeypatch, c
     seen = []
 
     class Turn:
-        def run(self):
+        id = "turn"
+        def stream(self):
+            from test_sdk_stream import message, completed
             assert json.loads(checkpoint.read_text())["thread_id"] == "accepted-id"
-            return SimpleNamespace(status="completed", final_response='{"ok":true}')
+            yield message('{"ok":true}')
+            yield completed()
 
     class Thread:
         id = "accepted-id"
@@ -126,6 +183,9 @@ def test_worker_checkpoints_only_after_turn_is_accepted(tmp_path, monkeypatch, c
     assert seen[1]["approval_mode"] == openai_codex.ApprovalMode.deny_all
     assert seen[1]["sandbox"] == openai_codex.Sandbox.read_only
     assert "sandbox_workspace_write.network_access=false" in seen[0].config_overrides
+    import os
+    if os.name == "nt":
+        assert 'windows.sandbox="' + (windows_mode or "unelevated") + '"' in seen[0].config_overrides
     if conversation:
         assert seen[1]["ephemeral"] is True
         assert "features.shell_tool=false" in seen[0].config_overrides

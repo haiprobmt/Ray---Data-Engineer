@@ -75,6 +75,19 @@ class Control:
                 (project_id,),
             )
 
+    def supersede_task_plans(self, project_id, task_id):
+        """A new source turn invalidates unconsumed approvals from the old turn."""
+        self.store.task(project_id, task_id)
+        with self.store.connect() as db:
+            db.execute(
+                "UPDATE plans SET state='SUPERSEDED' WHERE project_id=? AND task_id=? "
+                "AND state IN ('READY','PENDING_APPROVAL','APPROVED')", (project_id, task_id),
+            )
+            db.execute(
+                "UPDATE decisions SET status='SUPERSEDED' WHERE project_id=? AND task_id=? "
+                "AND kind LIKE 'approval:%' AND status='PENDING'", (project_id, task_id),
+            )
+
     def resume(self, project_id):
         with self.store.connect() as db:
             db.execute(
@@ -194,9 +207,22 @@ class Control:
                     )
                 ]
                 for task_id in ids:
+                    saved = db.execute("SELECT result FROM tasks WHERE id=? AND project_id=?", (task_id, project_id)).fetchone()
+                    report = json.loads(saved[0] or "{}")
+                    receipts = []
+                    for row in db.execute(
+                        "SELECT id,state,digest,remote,result FROM plans WHERE project_id=? AND task_id=? ORDER BY rowid",
+                        (project_id, task_id),
+                    ):
+                        receipt = dict(row)
+                        for key in ("remote", "result"):
+                            receipt[key] = json.loads(receipt[key]) if receipt[key] else None
+                        receipts.append(receipt)
+                    report.update(status="blocked", cloud_plans=receipts,
+                                  message="An interrupted Fabric action needs reconciliation. Its recorded receipt is preserved; no action was retried.")
                     db.execute(
-                        "UPDATE tasks SET status='BLOCKED',updated_at=? WHERE id=? AND project_id=?",
-                        (now(), task_id, project_id),
+                        "UPDATE tasks SET status='BLOCKED',result=?,updated_at=? WHERE id=? AND project_id=?",
+                        (json.dumps(report), now(), task_id, project_id),
                     )
                     db.execute(
                         "INSERT INTO events(task_id,status,time) VALUES (?,'BLOCKED',?)",

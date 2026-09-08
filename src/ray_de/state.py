@@ -36,6 +36,10 @@ class StateStore:
                     created_at TEXT NOT NULL, updated_at TEXT NOT NULL);
                 CREATE TABLE IF NOT EXISTS source_checkpoints (
                     task_id TEXT PRIMARY KEY REFERENCES tasks(id), manifest TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS task_context (
+                    project_id TEXT NOT NULL REFERENCES projects(id),
+                    task_id TEXT PRIMARY KEY REFERENCES tasks(id), body TEXT NOT NULL,
+                    updated_at TEXT NOT NULL);
                 CREATE TABLE IF NOT EXISTS tenant_resources (
                     project_id TEXT NOT NULL, grant_key TEXT NOT NULL, kind TEXT NOT NULL,
                     resource TEXT NOT NULL, plan_id TEXT NOT NULL,

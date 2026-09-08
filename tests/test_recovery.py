@@ -186,7 +186,9 @@ def test_failed_validation_prevents_review_and_completion(project, store):
     task = store.create(project.id, "Change", "write")
     runner = FakeRunner(project)
     report = Orchestrator(store, runner).run(project, task["id"], "Change")
-    assert report["status"] == "blocked" and len(runner.calls) == 1
+    assert report["status"] == "blocked" and len(runner.calls) == 2
+    assert all(not call["read_only"] for call in runner.calls)
+    assert report["repair_stop"] == "no_progress"
 
 
 def test_reviewer_mutation_blocks_completion(project, store):

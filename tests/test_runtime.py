@@ -62,9 +62,11 @@ def test_vendored_skills_match_lock():
 
     lock = catalogue()["source"]
     assert len(lock["revision"]) == 40
+    # The pinned lock records CRLF bytes; Git checkouts may normalize to LF.
+    # Normalize only line endings, retaining the exact content hash check.
     for rel, expected in lock["files"].items():
         assert (
-            hashlib.sha256((ray_de.skills.ROOT / rel).read_bytes()).hexdigest()
+            hashlib.sha256((ray_de.skills.ROOT / rel).read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")).hexdigest()
             == expected
         )
 

@@ -48,7 +48,9 @@ def test_local_source_stage_can_continue_without_a_cloud_action(project, store, 
 def test_local_continuation_cannot_skip_review(project, store, tmp_path, verdict):
     runner = LocalStages(review=verdict)
     _, report = run_stages(project, store, tmp_path, runner)
-    assert report["status"] == "blocked" and runner.authors == 1
+    assert report["status"] == "blocked"
+    assert runner.authors == (2 if verdict == "REWORK" else 1)
+    assert runner.reviews == runner.authors
 
 
 def test_local_continuation_requires_real_source_progress(project, store, tmp_path):
@@ -69,7 +71,8 @@ def test_local_continuation_has_a_bounded_stage_count(project, store, tmp_path, 
     monkeypatch.setattr("ray_de.orchestrator.validate", lambda *a: (True, ["Fixture validation passed"]))
     runner = LocalStages(endless=True)
     task, report = run_stages(project, store, tmp_path, runner)
-    assert runner.authors == 8 and runner.reviews == 8
+    assert runner.authors == project.config.execution.max_stages
+    assert runner.reviews == runner.authors
     assert report["status"] == "paused" and not report["cloud_eligible"]
     assert store.task(project.id, task["id"])["status"] == "PAUSED"
 

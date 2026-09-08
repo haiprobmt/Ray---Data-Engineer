@@ -366,7 +366,7 @@ class FabricGateway:
             if operation == "tenant_read":
                 return TenantGateway(self.project, self.store, self.data_dir, actor=self.actor).read(
                     req.item_id, req.workspace_id, req.tenant_arguments.model_dump(exclude_defaults=True), task_id=task_id)
-            base_operation = "get_item" if operation == "get_notebook_job" else operation if operation in {"get_item", "list_items", "get_sql_database", "get_environment"} else "get_lakehouse"
+            base_operation = "get_item" if operation in {"get_notebook_job", "get_job_status", "get_item_definition"} else operation if operation in {"get_item", "list_items", "get_sql_database", "get_environment"} else "get_lakehouse"
             environment, endpoint = authorize(self.project, base_operation, req.workspace_id, req.item_id)
         except ValueError:
             action = self.store.audit_start(self.project.id, task_id, self.actor, "policy_check", "rejected-target", None)
@@ -374,7 +374,16 @@ class FabricGateway:
             raise
         action = self.store.audit_start(self.project.id, task_id, self.actor, operation, endpoint, environment)
         try:
-            if operation == "get_notebook_job":
+            if operation == "get_item_definition":
+                data = self.item_definition(req, task_id=task_id)
+                source = "live_fabric_api" if self.live_transport else "provided_executor"
+            elif operation == "get_job_status":
+                ws, item, job = map(canonical_id, (req.workspace_id, req.item_id, req.job_id))
+                data = self.executor(f"workspaces/{ws}/items/{item}/jobs/instances/{job}")
+                if data.get("id") != job or data.get("itemId") not in {None, item}:
+                    raise PolicyError("Job response does not match its target")
+                source = "live_fabric_api" if self.live_transport else "provided_executor"
+            elif operation == "get_notebook_job":
                 data = self.notebook_job(req.workspace_id, req.item_id, req.job_id, task_id=task_id)
                 source = "live_fabric_api" if self.live_transport else "provided_executor"
             elif operation in {"get_item", "list_items", "get_lakehouse", "get_sql_database", "get_environment", "list_lakehouse_tables"}:
@@ -401,8 +410,11 @@ class FabricGateway:
                 database = endpoint_info.get("displayName")
                 if not isinstance(database, str) or not re.fullmatch(r"[A-Za-z0-9_ -]{1,128}", database):
                     raise PolicyError("SQL database name is missing or unsupported")
-                data = self.sql_executor({"server": server, "database": database,
-                    "operation": operation, "schema_name": req.schema_name, "table_name": req.table_name})
+                sql_request = {"server": server, "database": database,
+                    "operation": operation, "schema_name": req.schema_name, "table_name": req.table_name}
+                if operation in {"lakehouse_profile", "lakehouse_aggregate", "lakehouse_compare"}:
+                    sql_request["analytics"] = req.analytics.model_dump()
+                data = self.sql_executor(sql_request)
                 source = "live_fabric_sql" if self.live_sql else "provided_executor"
             encoded = json.dumps(data, ensure_ascii=False)
             if len(encoded.encode("utf-8")) > 16000:
@@ -414,11 +426,73 @@ class FabricGateway:
             self.store.audit_finish(action, "FAILED", type(exc).__name__)
             raise
 
-    def _execute(self, endpoint):
+    def item_definition(self, req, *, task_id=None):
+        import base64
+        import time
+        from .control import Control
+        from urllib.parse import urlsplit
+        if not self.project.config.fabric.allow_definition_export:
+            raise PolicyError("Definition export is disabled for this project")
+        ws, item = map(canonical_id, (req.workspace_id, req.item_id))
+        metadata = self.call("get_item", ws, item, task_id=task_id)
+        endpoint = f"workspaces/{ws}/items/{item}/getDefinition"
+        if metadata.get("type") == "Notebook":
+            endpoint += "?format=ipynb"
+        response = self.executor(endpoint, definition=True, envelope=True)
+        if response.get("status_code") == 202:
+            headers = {k.lower(): v for k, v in response.get("headers", {}).items()}
+            operation = headers.get("x-ms-operation-id")
+            if not operation:
+                uri = urlsplit(headers.get("location", ""))
+                if uri.scheme != "https" or uri.netloc != "api.fabric.microsoft.com" or uri.query or uri.fragment or not re.fullmatch(r"/v1/operations/[0-9a-f-]{36}", uri.path):
+                    raise PolicyError("Definition operation returned an unsupported location")
+                operation = uri.path.rsplit("/", 1)[1]
+            operation = canonical_id(operation)
+            token = getattr(self, "cancel", None) or Control(self.store).token(self.project.id)
+            deadline = time.monotonic() + min(120, self.project.config.timeout_seconds)
+            while True:
+                token.check()
+                if time.monotonic() >= deadline:
+                    raise RayError("TIMED_OUT")
+                state = self.executor("operations/" + operation)
+                if state.get("status") == "Succeeded":
+                    response = {"text": self.executor("operations/" + operation + "/result")}
+                    break
+                if state.get("status") in {"Failed", "Cancelled"}:
+                    raise RayError("FABRIC_UNAVAILABLE")
+                token.wait(2)
+        definition = response.get("text", {}).get("definition", {})
+        parts = definition.get("parts")
+        if not isinstance(parts, list) or len(parts) > 500:
+            raise RayError("FABRIC_UNAVAILABLE")
+        listing = [{"path": p.get("path"), "payload_type": p.get("payloadType")} for p in parts]
+        if not req.part_path:
+            return {"item_id": item, "parts": listing, "coverage": "part index; request part_path and offset to read content"}
+        matches = [p for p in parts if p.get("path") == req.part_path]
+        if len(matches) != 1 or matches[0].get("payloadType") != "InlineBase64":
+            raise RayError("FABRIC_UNAVAILABLE")
+        try:
+            content = base64.b64decode(matches[0]["payload"], validate=True).decode("utf-8")
+        except (ValueError, UnicodeError):
+            raise RayError("FABRIC_UNAVAILABLE") from None
+        # Sanitize complete lines before slicing, avoiding split credential fields.
+        from .processes import diagnostic_line
+        content = "\n".join(diagnostic_line(line) for line in content.splitlines())
+        if req.offset > len(content):
+            raise ValueError("Definition offset exceeds sanitized content length")
+        end = min(req.offset + 8000, len(content))
+        return {"item_id": item, "part_path": req.part_path, "offset": req.offset,
+                "content": content[req.offset:end], "next_offset": end if end < len(content) else None,
+                "coverage": "sanitized definition text excerpt", "truncated": end < len(content)}
+
+    def _execute(self, endpoint, *, definition=False, envelope=False):
+        if definition and (not self.project.config.fabric.allow_definition_export or not re.fullmatch(
+                r"workspaces/[0-9a-f-]{36}/items/[0-9a-f-]{36}/getDefinition(?:\?format=ipynb)?", endpoint)):
+            raise PolicyError("Unsupported definition read route")
         argv = [
             sys.executable,
             str(Path(__file__).with_name("fabric_worker.py")),
-            "get",
+            "post" if definition else "get",
             endpoint,
         ]
         try:
@@ -446,13 +520,15 @@ class FabricGateway:
                 pass
             raise RayError("FABRIC_UNAVAILABLE")
         try:
-            envelope = json.loads(result.stdout)
+            response = json.loads(result.stdout)
         except json.JSONDecodeError:
             raise RayError("FABRIC_UNAVAILABLE") from None
-        if not isinstance(envelope, dict) or envelope.get("status_code") != 200:
-            status = envelope.get("status_code") if isinstance(envelope, dict) else None
+        if not isinstance(response, dict) or response.get("status_code") not in ({200, 202} if definition else {200}):
+            status = response.get("status_code") if isinstance(response, dict) else None
             raise RayError({401: "FABRIC_AUTH_REQUIRED", 403: "FABRIC_FORBIDDEN", 404: "FABRIC_NOT_FOUND", 429: "FABRIC_LIMIT"}.get(status, "FABRIC_UNAVAILABLE"))
-        payload = envelope.get("text")
+        if envelope:
+            return response
+        payload = response.get("text")
         if not isinstance(payload, dict):
             raise RayError("FABRIC_UNAVAILABLE")
         return payload

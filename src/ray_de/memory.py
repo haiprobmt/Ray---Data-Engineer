@@ -69,7 +69,8 @@ def save_decision(project, title, context, decision, consequences, actor):
 
 
 def recall(project, query, limit=4):
-    words = set(re.findall(r"[a-z0-9_]{3,}", query.lower()))
+    from .skills import terms
+    words = terms(query)
     ranked = []
     for p in (project.directory / "decisions").glob("*.md"):
         if (
@@ -78,7 +79,7 @@ def recall(project, query, limit=4):
         ):
             continue
         text = p.read_text(encoding="utf-8")
-        score = len(words & set(re.findall(r"[a-z0-9_]{3,}", text.lower())))
+        score = len(words & terms(text))
         if score or not words:
             ranked.append((score, p.name, redact(text)))
     return [

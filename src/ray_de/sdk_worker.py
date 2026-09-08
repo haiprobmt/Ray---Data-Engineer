@@ -27,10 +27,11 @@ def atomic_json(path, value):
     temporary.replace(path)
 
 
-def consume_turn(turn, progress_path):
+def consume_turn(turn, progress_path, metadata=None):
     """Consume the public SDK stream while preserving final-response semantics."""
     from .model_progress import ProgressWriter
     from openai_codex.generated.v2_all import ItemCompletedNotification, TurnCompletedNotification, AgentMessageThreadItem
+    from openai_codex.generated.v2_all import ThreadTokenUsageUpdatedNotification
     progress = ProgressWriter(progress_path)
     final = fallback = None
     stream = turn.stream()
@@ -38,6 +39,9 @@ def consume_turn(turn, progress_path):
         for event in stream:
             payload = event.payload
             progress.observe(event)
+            if metadata is not None and isinstance(payload, ThreadTokenUsageUpdatedNotification) and payload.turn_id == turn.id:
+                metadata["usage"] = payload.token_usage.last.model_dump()
+                atomic_json(progress_path.with_name("runtime.json"), metadata)
             if isinstance(payload, ItemCompletedNotification) and payload.turn_id == turn.id:
                 item = getattr(payload.item, "root", payload.item)
                 if isinstance(item, AgentMessageThreadItem):
@@ -162,16 +166,26 @@ def run(request_path, result_path, checkpoint):
             if request["thread_id"]
             else codex.thread_start(**params)
         )
+        from openai_codex.generated.v2_all import ReasoningEffort
+        effort = request.get("reasoning_effort")
+        turn_options = {"effort": ReasoningEffort(effort)} if effort else {}
+        metadata = {"source": "codex_sdk", "configured_model": request["model"],
+                    "resolved_model": None, "reasoning_effort": effort, "usage": None,
+                    "sdk_version": "0.147.0"}
+        # The high-level Thread API does not expose the resolved model; never
+        # present a requested/default model as an observed one.
+        atomic_json(checkpoint.with_name("runtime.json"), metadata)
         turn = thread.turn(
             request["prompt"],
             output_schema=strict_output_schema(request["schema"]),
             approval_mode=ApprovalMode.deny_all,
             sandbox=sandbox,
+            **turn_options,
         )
         # A thread/start ID has no resumable rollout until turn/start succeeds.
         # Checkpoint the accepted turn before consuming its model output.
         atomic_json(checkpoint, {"thread_id": thread.id})
-        response = consume_turn(turn, checkpoint.with_name("progress.json"))
+        response = consume_turn(turn, checkpoint.with_name("progress.json"), metadata)
         atomic_json(result_path, response)
 
 

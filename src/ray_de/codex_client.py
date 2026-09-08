@@ -44,6 +44,7 @@ class CodexRunner:
         diagnostic=False,
         on_progress=None,
     ):
+        self.last_metadata = None
         if cancel:
             cancel.check()
         binary = resolve_binary("codex")
@@ -62,6 +63,7 @@ class CodexRunner:
             "binary": binary,
             "repo": str(repo),
             "model": project.config.model,
+            "reasoning_effort": getattr(project.config, "reasoning_effort", None),
             "home": str(home),
             "thread_id": thread_id,
             "read_only": read_only,
@@ -144,6 +146,13 @@ class CodexRunner:
                     cancel.check()
                 return json.loads(result_path.read_text(encoding="utf-8"))
             finally:
+                runtime_path = scratch / "runtime.json"
+                if runtime_path.exists():
+                    try:
+                        from .memory import redact_data
+                        self.last_metadata = redact_data(json.loads(runtime_path.read_text(encoding="utf-8")[:4096]))
+                    except (OSError, ValueError):
+                        self.last_metadata = None
                 if process.poll() is None:
                     if os.name == "nt":
                         subprocess.run(
@@ -155,7 +164,10 @@ class CodexRunner:
                     else:
                         import signal
 
-                        os.killpg(process.pid, signal.SIGTERM)
+                        try:
+                            os.killpg(process.pid, signal.SIGTERM)
+                        except ProcessLookupError:
+                            pass  # Worker exited between poll and termination.
                     try:
                         process.wait(timeout=10)
                     except subprocess.TimeoutExpired:

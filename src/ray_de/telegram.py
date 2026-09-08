@@ -576,6 +576,8 @@ class Gateway:
                     # Only the original direct user message can become the objective.
                     # Model text can offer a button, never authorize an operation.
                     task = self.store.create(project.id, text, session["mode"])
+                    from .task_context import capture_handoff
+                    capture_handoff(self.store, project.id, task["id"], actor)
                     with self.store.connect() as db:
                         db.execute("INSERT INTO channel_tasks VALUES (?,?,?)", (actor, project.id, task["id"]))
                     self.control.set_session(actor, project.id, task["id"], session["mode"])
@@ -600,6 +602,8 @@ class Gateway:
         task_id = session["task_id"]
         if not task_id:
             task = self.store.create(project.id, text, session["mode"])
+            from .task_context import capture_handoff
+            capture_handoff(self.store, project.id, task["id"], actor)
             task_id = task["id"]
             with self.store.connect() as db:
                 db.execute(

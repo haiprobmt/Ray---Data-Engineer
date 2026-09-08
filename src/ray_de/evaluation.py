@@ -46,7 +46,19 @@ def summarize(store, project_id):
                 (project_id,),
             )
         ]
+    from .task_context import read
+    intelligence = []
+    for task in tasks:
+        context = read(store, project_id, task["id"])
+        result = json.loads(task["result"] or "{}")
+        intelligence.append({"task_id": task["id"], "execution": context.get("execution"),
+                             "model_runs": context.get("model_runs", []),
+                             "repair_attempts": len(result.get("repair_history", [])),
+                             "repair_stop": result.get("repair_stop"),
+                             "has_handoff_context": bool(context.get("brief")),
+                             "plan": context.get("plan")})
     return {
+        "intelligence": intelligence,
         "project_id": project_id,
         "generated_at": now(),
         "task_count": len(tasks),

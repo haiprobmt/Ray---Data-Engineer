@@ -86,6 +86,14 @@ class FabricConfig(StrictModel):
         return self
 
 
+class ExecutionConfig(StrictModel):
+    repair_attempts: int = Field(default=3, ge=0, le=3)
+    max_stages: int = Field(default=24, ge=1, le=48)
+    max_read_rounds: int = Field(default=12, ge=1, le=24)
+    max_model_calls: int = Field(default=64, ge=1, le=128)
+    max_seconds: int = Field(default=3600, ge=30, le=7200)
+
+
 class ProjectConfig(StrictModel):
     project_id: str = Field(pattern=r"^[a-z][a-z0-9_-]{0,63}$")
     name: str
@@ -95,6 +103,8 @@ class ProjectConfig(StrictModel):
     validation_commands: list[list[str]] = Field(default_factory=list)
     post_validation_commands: list[list[str]] = Field(default_factory=list)
     model: str | None = None
+    reasoning_effort: Literal["minimal", "low", "medium", "high", "xhigh"] | None = None
+    execution: ExecutionConfig = Field(default_factory=ExecutionConfig)
     timeout_seconds: int = Field(default=600, ge=10, le=7200)
 
     @model_validator(mode="after")
@@ -159,6 +169,11 @@ class Project:
         # Bind tasks to both their repository and policy, so configuration changes
         # cannot silently resume an old thread with a different target or privilege.
         config = self.config.model_dump()
+        # Preserve bindings created before these optional settings existed.
+        if config["execution"] == ExecutionConfig().model_dump():
+            config.pop("execution")
+        if config["reasoning_effort"] is None:
+            config.pop("reasoning_effort")
         if config["fabric"]["tenant"] is None:
             config["fabric"].pop("tenant")
         if not config["post_validation_commands"]:

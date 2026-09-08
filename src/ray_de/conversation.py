@@ -26,6 +26,8 @@ class ConversationService:
         self.reading = ReadingStore(store)
         with store.connect() as db:
             db.execute("CREATE TABLE IF NOT EXISTS conversations (id INTEGER PRIMARY KEY, actor TEXT NOT NULL, role TEXT NOT NULL, text TEXT NOT NULL)")
+            if "project_id" not in {r["name"] for r in db.execute("PRAGMA table_info(conversations)")}:
+                db.execute("ALTER TABLE conversations ADD COLUMN project_id TEXT")
 
     @staticmethod
     def control_id(actor):
@@ -124,8 +126,8 @@ class ConversationService:
         token.check()
         result = result.model_copy(update={"message": redact(result.message)})
         with self.store.connect() as db:
-            db.executemany("INSERT INTO conversations(actor,role,text) VALUES (?,?,?)", [
-                (actor, "user", text), (actor, "assistant", result.message),
+            db.executemany("INSERT INTO conversations(actor,role,text,project_id) VALUES (?,?,?,?)", [
+                (actor, "user", text, project.id), (actor, "assistant", result.message, project.id),
             ])
             db.execute("DELETE FROM conversations WHERE actor=? AND id NOT IN (SELECT id FROM conversations WHERE actor=? ORDER BY id DESC LIMIT 40)", (actor, actor))
         return result

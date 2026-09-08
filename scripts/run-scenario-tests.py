@@ -24,6 +24,9 @@ def main():
     parser.add_argument("--auth-home", type=Path, required=True)
     parser.add_argument("--scenario", nargs="*", default=[])
     parser.add_argument("--followup", help="Continue a single existing scenario with this message")
+    parser.add_argument("--model", help="Explicit model for a controlled comparison run")
+    parser.add_argument("--reasoning-effort", choices=["minimal", "low", "medium", "high", "xhigh"])
+    parser.add_argument("--variant", default="default", help="Label recorded in results; use a separate run-root per variant")
     args = parser.parse_args()
     pack, root = args.pack.resolve(), args.run_root.resolve()
     if root.is_relative_to(pack) or pack.is_relative_to(root):
@@ -55,6 +58,7 @@ def main():
                    "fabric": {"workspaces": []},
                    "validation_commands": [["{python}", "-m", "ray_de.artifacts"]],
                    "timeout_seconds": 600}
+            cfg.update(model=args.model, reasoning_effort=args.reasoning_effort)
             config.write_text(yaml.safe_dump(cfg), encoding="utf-8")
             (directory / "CONTEXT.md").write_text(
                 "This is a local engineering lab. The repository contains the supplied source files. "
@@ -62,6 +66,8 @@ def main():
                 "the documented conventions. Produce local source, analysis and validation evidence. "
                 "No cloud workspace is configured; do not perform or claim cloud execution.\n", encoding="utf-8")
         project = load_project(config)
+        if args.model is not None and project.config.model != args.model or args.reasoning_effort is not None and project.config.reasoning_effort != args.reasoning_effort:
+            parser.error("Variant settings differ from this saved project; choose a separate run-root")
         store.bind(project)
         auth_file = runner.home(project) / "auth.json"
         if not auth_file.exists():
@@ -79,7 +85,10 @@ def main():
                 result = TaskService(store, runner, state).run(project, task["id"], message, "local-scenario-evaluator")
         except Exception as exc:
             result = {"status": "error", "error": describe_error(exc), "task_id": task["id"]}
-        record = {"scenario": name, "prompt": message, "result": result,
+        from ray_de.task_context import read
+        knowledge = read(store, project.id, task["id"])
+        record = {"variant": args.variant, "configured_model": project.config.model, "reasoning_effort": project.config.reasoning_effort,
+                  "execution": knowledge.get("execution"), "model_runs": knowledge.get("model_runs"), "scenario": name, "prompt": message, "result": result,
                   "runtime": "real Codex SDK and Ray task service; local-only project"}
         rounds = list(directory.glob("round-*.json"))
         output = directory / f"round-{len(rounds)+1:02d}.json"

@@ -1,7 +1,7 @@
 # Ray — Fabric Senior Data Engineer
 
 Ray is a local engineering assistant built from the supplied implementation blueprint.
-Version 0.2.0 implements the local application for Sprints 1–6: Codex engineering turns,
+Version 0.3.0 extends the local application for Sprints 1–6: Codex engineering turns,
 Fabric discovery, durable Telegram controls, project memory, governed DEV operations,
 and approval-bound TEST promotion. The supplied configuration is **local-only**.
 
@@ -33,7 +33,17 @@ keeps the full checks, error references and item IDs available when needed.
 Task failures are retained for `/status` across restarts, including errors while
 reading Fabric before the model starts. Raw exceptions, credential-bearing URLs,
 and service response bodies are not sent or saved as error details. Unknown causes
-are reported as unknown. Failed operations are not automatically retried.
+are reported as unknown. Failed cloud operations are not automatically retried. Recoverable local validation
+failures and reviewer REWORK can enter the bounded source-repair loop.
+
+## Intelligence and investigation upgrade
+
+Ray now carries project-scoped conversation context into engineering tasks, repairs
+recoverable local validation/review failures, retrieves sections throughout the
+pinned Fabric knowledge collection, and supports analytical Lakehouse reads and
+item/job inspection. Durable plans and progress-aware budgets support longer tasks.
+See [the upgrade guide](docs/intelligence-upgrade.md) for configuration, laptop update
+steps, model comparison and the live acceptance checks still required.
 
 ## Run the offline demonstration
 
@@ -271,7 +281,7 @@ Ray can return source files as structured artifacts when model file tools are un
 Local definition parts may reference a repository file with `payloadType: SourceFile`
 and `source`; the host converts it to Fabric's InlineBase64 before validation and review.
 Dependent stages use `continue_work: true`: the host returns successful creation receipts
-before another model turn plans the next stage. Up to eight stages run per invocation;
+before another model turn plans the next stage. Up to the configured stage budget (24 by default) run per invocation;
 pending approvals, errors or uncertain writes stop continuation. Every stage receives
 fresh source validation and independent review. Lost creation responses without an
 item/operation receipt require inspection; Ray never adopts an item solely by its name.

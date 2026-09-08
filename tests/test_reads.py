@@ -55,10 +55,12 @@ def test_sql_auth_failure_identifies_sql_instead_of_workspace_login(monkeypatch,
 
 
 def test_missing_sql_table_has_a_safe_specific_error(monkeypatch, capsys):
-    import pyodbc
+    # Only the SQLSTATE contract is under test, not the optional native driver.
+    class ProgrammingError(Exception):
+        pass
     from ray_de import sql_worker
     monkeypatch.setattr(sql_worker.sys, "stdin", io.StringIO(json.dumps(sql_request())))
-    def fail(*a, **kw): raise pyodbc.ProgrammingError("42S02", "private table detail (208)")
+    def fail(*a, **kw): raise ProgrammingError("42S02", "private table detail (208)")
     monkeypatch.setattr(sql_worker, "execute", fail)
     assert sql_worker.main() == 1
     assert json.loads(capsys.readouterr().out) == {"error_code": "FABRIC_SQL_TABLE_UNAVAILABLE"}
@@ -280,7 +282,8 @@ def test_read_loop_is_bounded(project, store, tmp_path, monkeypatch):
     monkeypatch.setattr(FabricGateway, "read", lambda *a, **kw: calls.append(1) or {"data": {}})
     snapshot = {"project_id": project.id, "binding": project.binding}
     result = TaskService(store, Runner(), tmp_path).run(project, task["id"], "Verify", "actor", snapshot=snapshot)
-    assert len(calls) == 4 and result["status"] == "blocked"
+    assert len(calls) == 3 and result["status"] == "blocked"
+    assert "no new evidence" in result["message"]
 
 
 def test_expired_sql_auth_uses_sql_scope_without_connecting(monkeypatch):

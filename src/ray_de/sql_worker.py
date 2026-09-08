@@ -11,7 +11,9 @@ from importlib.metadata import version
 
 def query(request):
     """Return one fixed SELECT and parameters, rejecting arbitrary SQL input."""
-    if set(request) != {"server", "database", "operation", "schema_name", "table_name"}:
+    analytical = request.get("operation") in {"lakehouse_profile", "lakehouse_aggregate", "lakehouse_compare"}
+    expected = {"server", "database", "operation", "schema_name", "table_name"} | ({"analytics"} if analytical else set())
+    if set(request) != expected:
         raise ValueError("Invalid SQL read request")
     if not isinstance(request["server"], str) or not re.fullmatch(r"[a-zA-Z0-9-]+\.datawarehouse\.fabric\.microsoft\.com", request["server"]):
         raise ValueError("Invalid SQL server")
@@ -20,6 +22,9 @@ def query(request):
     for key in ("schema_name", "table_name"):
         if not isinstance(request[key], str) or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]{0,127}", request[key]):
             raise ValueError("Unsupported SQL identifier")
+    if analytical:
+        from .analytics import compile_select
+        return compile_select(request["operation"], request["schema_name"], request["table_name"], request["analytics"])
     table = f"[{request['schema_name']}].[{request['table_name']}]"
     if request["operation"] == "lakehouse_count":
         return f"SELECT COUNT_BIG(*) AS row_count FROM {table}", ()
@@ -98,6 +103,9 @@ def execute(request, *, connect=None, token=None):
             data = {"columns": columns, "rows": rows, "truncated": len(fetched) > 100,
                     "coverage": "table_count" if request["operation"] == "lakehouse_count" else request["operation"],
                     "consistency": "SQL analytics endpoint at query time; Delta synchronization may lag"}
+            if "analytics" in request:
+                data["analytics"] = request["analytics"]
+                data["coverage"] = request["operation"] + "; full query scope, output capped at 100 groups; database collation semantics"
             # Round-trip non-JSON SQL values such as Decimal and datetime as strings.
             encoded = json.dumps(data, default=str, ensure_ascii=False)
             if len(encoded.encode("utf-8")) > 16000:
@@ -111,7 +119,7 @@ def execute(request, *, connect=None, token=None):
 
 def main(*, login=False, browser=False):
     try:
-        request = None if login else json.loads(sys.stdin.read(4097))
+        request = None if login else json.loads(sys.stdin.read(16001))
         with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
             if login:
                 # Only the explicit local login command enables interactive auth.
